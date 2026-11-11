@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { GraduationCap, Search, Briefcase, ArrowRight } from 'lucide-react';
 import { SPECIALTIES } from '../data/mockData';
 
-export const SpecialtiesSection: React.FC = () => {
+interface SpecialtiesSectionProps {
+  onViewUniversities?: (query: string) => void;
+}
+
+export const SpecialtiesSection: React.FC<SpecialtiesSectionProps> = ({ onViewUniversities }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Все');
 
@@ -115,10 +119,15 @@ export const SpecialtiesSection: React.FC = () => {
               <span className="text-slate-500">
                 Вузов в РФ: <strong className="text-slate-700">{spec.universitiesCount}</strong>
               </span>
-              <span className="text-blue-600 font-bold flex items-center gap-1 cursor-pointer hover:underline">
-                Смотреть вузы
-                <ArrowRight className="w-3.5 h-3.5" />
-              </span>
+              <button
+                type="button"
+                onClick={() => onViewUniversities && onViewUniversities(spec.name)}
+                className="text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1 group transition-colors"
+                title={`Показать все вузы с направлением «${spec.name}»`}
+              >
+                <span>Смотреть вузы</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </button>
             </div>
 
           </div>

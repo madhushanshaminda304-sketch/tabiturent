@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   MessageSquareText, 
   ThumbsUp, 
@@ -7,12 +7,15 @@ import {
   ShieldAlert, 
   Home, 
   Briefcase, 
-  UserCheck,
-  Building2,
-  ChevronDown,
-  ChevronUp,
-  Send,
-  MessageCircle
+  UserCheck, 
+  Building2, 
+  ChevronDown, 
+  ChevronUp, 
+  Send, 
+  MessageCircle,
+  Search,
+  ArrowUpDown,
+  X
 } from 'lucide-react';
 import { Review, SentimentType, ReviewComment } from '../types';
 import { REVIEWS, UNIVERSITIES } from '../data/mockData';
@@ -22,6 +25,8 @@ export const ReviewsSection: React.FC = () => {
   const [reviewsList, setReviewsList] = useState<Review[]>(REVIEWS);
   const [selectedSentiment, setSelectedSentiment] = useState<SentimentType | 'all'>('all');
   const [selectedUni, setSelectedUni] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortBy, setSortBy] = useState<'helpful' | 'newest' | 'official'>('helpful');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [expandedDiscussionId, setExpandedDiscussionId] = useState<string | null>(null);
 
@@ -29,12 +34,44 @@ export const ReviewsSection: React.FC = () => {
   const [commentText, setCommentText] = useState<{ [reviewId: string]: string }>({});
   const [commentAuthor, setCommentAuthor] = useState<{ [reviewId: string]: string }>({});
 
-  // Filter reviews
-  const filteredReviews = reviewsList.filter((rev) => {
-    if (selectedSentiment !== 'all' && rev.sentiment !== selectedSentiment) return false;
-    if (selectedUni !== 'all' && rev.universityId !== selectedUni) return false;
-    return true;
-  });
+  // Filter and sort reviews
+  const filteredReviews = useMemo(() => {
+    return reviewsList
+      .filter((rev) => {
+        if (selectedSentiment !== 'all' && rev.sentiment !== selectedSentiment) return false;
+        if (selectedUni !== 'all' && rev.universityId !== selectedUni) return false;
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          const matchTitle = rev.title.toLowerCase().includes(q);
+          const matchContent = rev.content.toLowerCase().includes(q);
+          const matchAuthor = rev.author.toLowerCase().includes(q);
+          const matchUni = rev.universityName.toLowerCase().includes(q);
+          const matchFaculty = rev.facultyName.toLowerCase().includes(q);
+          if (!matchTitle && !matchContent && !matchAuthor && !matchUni && !matchFaculty) return false;
+        }
+        if (sortBy === 'official' && !rev.officialReply) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'helpful') {
+          return b.likes - a.likes;
+        }
+        if (sortBy === 'official') {
+          return (b.officialReply ? 1 : 0) - (a.officialReply ? 1 : 0);
+        }
+        // newest (by id or order)
+        return 0;
+      });
+  }, [reviewsList, selectedSentiment, selectedUni, searchQuery, sortBy]);
+
+  const hasActiveFilters = selectedSentiment !== 'all' || selectedUni !== 'all' || searchQuery.trim() !== '' || sortBy !== 'helpful';
+
+  const resetFilters = () => {
+    setSelectedSentiment('all');
+    setSelectedUni('all');
+    setSearchQuery('');
+    setSortBy('helpful');
+  };
 
   const handleLike = (id: string) => {
     setReviewsList((prev) =>
@@ -104,69 +141,132 @@ export const ReviewsSection: React.FC = () => {
         </button>
       </div>
 
-      {/* Filter and Switcher Bar */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Filter, Search, and Sorting Bar */}
+      <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-200 space-y-4">
         
-        {/* Sentiment Switcher */}
-        <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
-          <button
-            onClick={() => setSelectedSentiment('all')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-              selectedSentiment === 'all'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            Все отзывы ({reviewsList.length})
-          </button>
-          <button
-            onClick={() => setSelectedSentiment('positive')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-              selectedSentiment === 'positive'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-            }`}
-          >
-            Положительные (Рекомендуют)
-          </button>
-          <button
-            onClick={() => setSelectedSentiment('neutral')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-              selectedSentiment === 'neutral'
-                ? 'bg-amber-600 text-white shadow-sm'
-                : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-            }`}
-          >
-            Нейтральные
-          </button>
-          <button
-            onClick={() => setSelectedSentiment('negative')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-              selectedSentiment === 'negative'
-                ? 'bg-rose-600 text-white shadow-sm'
-                : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
-            }`}
-          >
-            Отрицательные
-          </button>
+        {/* Row 1: Search & University & Sorting */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+          
+          {/* Keyword Search */}
+          <div className="relative md:col-span-5">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Поиск по тексту, автору или факультету..."
+              className="w-full text-xs font-medium pl-9 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 p-0.5"
+                title="Очистить поиск"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          {/* University Selector */}
+          <div className="md:col-span-4">
+            <label htmlFor="uni-filter-select" className="sr-only">Фильтр по вузу</label>
+            <div className="relative">
+              <Building2 className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+              <select
+                id="uni-filter-select"
+                value={selectedUni}
+                onChange={(e) => setSelectedUni(e.target.value)}
+                className="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">Все университеты</option>
+                {UNIVERSITIES.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Sorting Dropdown */}
+          <div className="md:col-span-3">
+            <label htmlFor="sort-reviews-select" className="sr-only">Сортировка отзывов</label>
+            <div className="relative">
+              <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+              <select
+                id="sort-reviews-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="helpful">Сначала полезные</option>
+                <option value="newest">Сначала новые</option>
+                <option value="official">С официальным ответом</option>
+              </select>
+            </div>
+          </div>
+
         </div>
 
-        {/* University Selector */}
-        <div className="w-full md:w-64">
-          <label htmlFor="uni-filter-select" className="sr-only">Фильтр по вузу</label>
-          <select
-            id="uni-filter-select"
-            value={selectedUni}
-            onChange={(e) => setSelectedUni(e.target.value)}
-            className="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="all">Все университеты</option>
-            {UNIVERSITIES.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name}
-              </option>
-            ))}
-          </select>
+        {/* Row 2: Sentiment Switcher & Reset */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+            <button
+              onClick={() => setSelectedSentiment('all')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                selectedSentiment === 'all'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Все ({reviewsList.length})
+            </button>
+            <button
+              onClick={() => setSelectedSentiment('positive')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                selectedSentiment === 'positive'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+              }`}
+            >
+              Положительные
+            </button>
+            <button
+              onClick={() => setSelectedSentiment('neutral')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                selectedSentiment === 'neutral'
+                  ? 'bg-amber-600 text-white shadow-sm'
+                  : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+              }`}
+            >
+              Нейтральные
+            </button>
+            <button
+              onClick={() => setSelectedSentiment('negative')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                selectedSentiment === 'negative'
+                  ? 'bg-rose-600 text-white shadow-sm'
+                  : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
+              }`}
+            >
+              Отрицательные
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
+            <span>Найдено: <strong className="text-slate-900 font-bold">{filteredReviews.length}</strong></span>
+            {hasActiveFilters && (
+              <button
+                onClick={resetFilters}
+                className="text-rose-600 hover:text-rose-800 font-bold transition-colors"
+              >
+                Сбросить фильтры
+              </button>
+            )}
+          </div>
+
         </div>
 
       </div>
