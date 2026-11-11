@@ -58,6 +58,15 @@ export interface University {
   coordinates?: { lat: number; lng: number };
 }
 
+export interface ReviewComment {
+  id: string;
+  author: string;
+  status: string;
+  date: string;
+  text: string;
+  likes: number;
+}
+
 export interface Review {
   id: string;
   universityId: string;
@@ -78,6 +87,7 @@ export interface Review {
   };
   likes: number;
   commentsCount: number;
+  comments?: ReviewComment[];
   officialReply?: {
     representativeName: string;
     role: string;
@@ -170,3 +180,32 @@ export interface TopProgramItem {
   tuitionPerYear: number;
   budgetSlots: number;
 }
+
+export interface TopSpecialty {
+  rank: number;
+  code: string;
+  name: string;
+  sharePercent: number;
+  category: string;
+  degree: 'Бакалавриат' | 'Специалитет';
+  medianSalary: number;
+  avgBudgetScore: number;
+  budgetGrowth: string;
+  topUniversity: string;
+  universitiesCount: number;
+  totalGraduatesYear: number;
+}
+
+export interface AdmissionsDeadline {
+  id: string;
+  date: string;
+  time?: string;
+  title: string;
+  stage: 'Прием документов' | 'ДВИ и вступительные' | 'Конкурсные списки' | 'Подача оригиналов' | 'Приказы';
+  description: string;
+  isCritical: boolean;
+  targetAudience: 'Все абитуриенты' | 'БВИ и квотники' | 'Основной этап (ЕГЭ)' | 'Платное обучение';
+  officialDocument: string;
+  tips: string;
+}
+

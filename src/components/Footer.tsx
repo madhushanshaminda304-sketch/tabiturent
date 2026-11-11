@@ -2,9 +2,17 @@ import React from 'react';
 
 interface FooterProps {
   setActiveTab: (t: string) => void;
+  openAdvModal?: () => void;
+  openFeedbackModal?: () => void;
+  openSubmitReview?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
+export const Footer: React.FC<FooterProps> = ({ 
+  setActiveTab,
+  openAdvModal,
+  openFeedbackModal,
+  openSubmitReview
+}) => {
   return (
     <footer className="bg-tabi-navyDark text-slate-400 text-xs border-t border-slate-800 mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -23,7 +31,33 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <p className="text-xs leading-relaxed text-slate-400">
               Независимый информационно-аналитический проект о высшем образовании в России. Честные отзывы студентов («сливы»), проходные баллы, умный подбор и рейтинги.
             </p>
-            <span className="text-[11px] text-slate-500 block">
+            <div className="pt-2 flex flex-wrap gap-2 text-[11px]">
+              {openSubmitReview && (
+                <button
+                  onClick={openSubmitReview}
+                  className="text-amber-400 hover:text-amber-300 font-bold underline"
+                >
+                  Прислать слив
+                </button>
+              )}
+              {openFeedbackModal && (
+                <button
+                  onClick={openFeedbackModal}
+                  className="text-slate-400 hover:text-white underline"
+                >
+                  Обратная связь
+                </button>
+              )}
+              {openAdvModal && (
+                <button
+                  onClick={openAdvModal}
+                  className="text-slate-400 hover:text-white underline"
+                >
+                  Реклама на сайте
+                </button>
+              )}
+            </div>
+            <span className="text-[11px] text-slate-500 block pt-1">
               © 2014–2026 Проект «Табитуриент». Все права защищены.
             </span>
           </div>
@@ -60,13 +94,13 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('reviews')} className="hover:text-white transition-colors">
-                  Сливы отзывов студентов
+                <button onClick={() => setActiveTab('topspec')} className="hover:text-white transition-colors text-amber-300 font-semibold">
+                  Топ направлений подготовки РФ
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('dorms')} className="hover:text-white transition-colors">
-                  Инспектор общежитий
+                <button onClick={() => setActiveTab('calendar')} className="hover:text-white transition-colors text-blue-300 font-semibold">
+                  Календарь абитуриента 2026
                 </button>
               </li>
             </ul>
@@ -78,6 +112,16 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               Инструменты и сервисы
             </h4>
             <ul className="space-y-2">
+              <li>
+                <button onClick={() => setActiveTab('reviews')} className="hover:text-white transition-colors">
+                  Сливы отзывов студентов
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveTab('dorms')} className="hover:text-white transition-colors">
+                  Инспектор общежитий
+                </button>
+              </li>
               <li>
                 <button onClick={() => setActiveTab('rankings')} className="hover:text-white transition-colors">
                   Сводные рейтинги вузов 2026
@@ -117,8 +161,8 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           </div>
 
           {/* Col 4: Quality & University Reps */}
-          <div className="space-y-2.5">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2">
               Представителям вузов
             </h4>
             <button
@@ -130,8 +174,21 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               </span>
               Управление профилем, официальные ответы на отзывы студентов и размещение ДОД.
             </button>
-            <div className="text-[11px] text-slate-500 pt-2">
-              Все отзывы модерируются. Сделано с заботой об абитуриентах.
+
+            {openAdvModal && (
+              <button
+                onClick={openAdvModal}
+                className="w-full p-3 bg-indigo-950/40 hover:bg-indigo-950/60 text-left rounded-xl border border-indigo-900/50 text-[11px] leading-relaxed transition-colors block"
+              >
+                <span className="text-indigo-300 font-bold block mb-1">
+                  📢 Реклама и спецпроекты
+                </span>
+                Медиакит для высших учебных заведений и подготовительных курсов.
+              </button>
+            )}
+
+            <div className="text-[11px] text-slate-500 pt-1">
+              Все отзывы модерируются. Проект создан для прозрачности высшего образования.
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-import { University, Review, QnaQuestion, OpenDayEvent, Article, SpecialtyInfo, DormInfo, TopProgramItem } from '../types';
+import { University, Review, QnaQuestion, OpenDayEvent, Article, SpecialtyInfo, DormInfo, TopProgramItem, TopSpecialty, AdmissionsDeadline } from '../types';
 
 export const EGE_SUBJECTS = [
   { id: 'rus', name: 'Русский язык', defaultScore: 78, required: true },
@@ -530,6 +530,247 @@ export const UNIVERSITIES: University[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'urfu',
+    name: 'УрФУ',
+    fullName: 'Уральский федеральный университет имени первого Президента России Б.Н. Ельцина',
+    logo: '⚡',
+    region: 'Свердловская область',
+    address: 'г. Екатеринбург, ул. Мира, д. 19',
+    metroStation: 'Площадь 1905 года / Динамо',
+    coordinates: { lat: 56.844, lng: 60.653 },
+    isState: true,
+    isHead: true,
+    hasMilitary: true,
+    hasDorm: true,
+    dormPriceMonthly: 1200,
+    dormRating: 4.4,
+    minPassingScore: 235,
+    avgPassingScore: 258,
+    minTuition: 195000,
+    budgetSlotsTotal: 4600,
+    reviewsCount: 285,
+    positiveReviewsCount: 228,
+    neutralReviewsCount: 42,
+    negativeReviewsCount: 15,
+    globalRank: 7,
+    reviewRank: 6,
+    egeRank: 9,
+    costRank: 2,
+    studentSatisfaction: 80,
+    description: 'Крупнейший федеральный университет Урала. Центр инженерных и цифровых инноваций, развитый новый кампус Новокольцовский с современной инфраструктурой Международных университетских игр.',
+    faculties: [
+      {
+        id: 'urfu-rtf',
+        name: 'Институт радиоэлектроники и информационных технологий (ИРИТ-РТФ)',
+        programs: [
+          {
+            id: 'urfu-se',
+            code: '09.03.04',
+            name: 'Программная инженерия',
+            facultyName: 'ИРИТ-РТФ',
+            degree: 'Бакалавриат',
+            budgetSlots: 150,
+            paidSlots: 80,
+            passingScoreBudget: 272,
+            passingScorePaid: 165,
+            tuitionPerYear: 220000,
+            durationYears: 4,
+            subjects: [
+              { subject: 'Русский язык', minScore: 50 },
+              { subject: 'Профильная математика', minScore: 60 },
+              { subject: 'Информатика (ИКТ)', minScore: 60 }
+            ]
+          },
+          {
+            id: 'urfu-cs',
+            code: '09.03.01',
+            name: 'Информатика и вычислительная техника',
+            facultyName: 'ИРИТ-РТФ',
+            degree: 'Бакалавриат',
+            budgetSlots: 120,
+            paidSlots: 60,
+            passingScoreBudget: 258,
+            passingScorePaid: 160,
+            tuitionPerYear: 210000,
+            durationYears: 4,
+            subjects: [
+              { subject: 'Русский язык', minScore: 50 },
+              { subject: 'Профильная математика', minScore: 60 },
+              { subject: 'Информатика (ИКТ)', minScore: 60 }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'tsu',
+    name: 'ТГУ',
+    fullName: 'Национальный исследовательский Томский государственный университет',
+    logo: '🌲',
+    region: 'Томская область',
+    address: 'г. Томск, пр. Ленина, д. 36',
+    coordinates: { lat: 56.469, lng: 84.949 },
+    isState: true,
+    isHead: true,
+    hasMilitary: true,
+    hasDorm: true,
+    dormPriceMonthly: 900,
+    dormRating: 4.5,
+    minPassingScore: 238,
+    avgPassingScore: 262,
+    minTuition: 185000,
+    budgetSlotsTotal: 2900,
+    reviewsCount: 194,
+    positiveReviewsCount: 160,
+    neutralReviewsCount: 26,
+    negativeReviewsCount: 8,
+    globalRank: 8,
+    reviewRank: 4,
+    egeRank: 8,
+    costRank: 1,
+    studentSatisfaction: 83,
+    description: 'Старейший классический университет в азиатской части России (основан в 1878 г.). Сильнейшие естественнонаучные, гуманитарные и IT-школы. Томск — студенческая столица России, где каждый 5-й житель — студент.',
+    faculties: [
+      {
+        id: 'tsu-cs',
+        name: 'Институт прикладной математики и компьютерных наук (ИПМКН)',
+        programs: [
+          {
+            id: 'tsu-pmi',
+            code: '01.03.02',
+            name: 'Прикладная математика и информатика',
+            facultyName: 'ИПМКН',
+            degree: 'Бакалавриат',
+            budgetSlots: 85,
+            paidSlots: 30,
+            passingScoreBudget: 264,
+            passingScorePaid: 160,
+            tuitionPerYear: 195000,
+            durationYears: 4,
+            subjects: [
+              { subject: 'Русский язык', minScore: 55 },
+              { subject: 'Профильная математика', minScore: 60 },
+              { subject: 'Информатика (ИКТ)', minScore: 60 }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'spbstu',
+    name: 'СПбПУ',
+    fullName: 'Санкт-Петербургский политехнический университет Петра Великого',
+    logo: '⚙️',
+    region: 'Санкт-Петербург',
+    address: 'г. Санкт-Петербург, Политехническая ул., д. 29',
+    metroStation: 'Политехническая / Академическая',
+    coordinates: { lat: 60.007, lng: 30.372 },
+    isState: true,
+    isHead: true,
+    hasMilitary: true,
+    hasDorm: true,
+    dormPriceMonthly: 1500,
+    dormRating: 4.1,
+    minPassingScore: 250,
+    avgPassingScore: 271,
+    minTuition: 240000,
+    budgetSlotsTotal: 3400,
+    reviewsCount: 268,
+    positiveReviewsCount: 201,
+    neutralReviewsCount: 47,
+    negativeReviewsCount: 20,
+    globalRank: 9,
+    reviewRank: 8,
+    egeRank: 7,
+    costRank: 5,
+    studentSatisfaction: 75,
+    description: 'Главный инженерный и политехнический вуз Северо-Запада России. Огромный исторический парк-кампус, развитый инжиниринговый центр, передовые программы передового цифрового производства.',
+    faculties: [
+      {
+        id: 'spbstu-iknt',
+        name: 'Институт компьютерных наук и кибербезопасности',
+        programs: [
+          {
+            id: 'spbstu-se',
+            code: '09.03.04',
+            name: 'Программная инженерия',
+            facultyName: 'Институт КНКБ',
+            degree: 'Бакалавриат',
+            budgetSlots: 100,
+            paidSlots: 75,
+            passingScoreBudget: 284,
+            passingScorePaid: 190,
+            tuitionPerYear: 260000,
+            durationYears: 4,
+            subjects: [
+              { subject: 'Русский язык', minScore: 60 },
+              { subject: 'Профильная математика', minScore: 65 },
+              { subject: 'Информатика (ИКТ)', minScore: 65 }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'unn',
+    name: 'ННГУ',
+    fullName: 'Национальный исследовательский Нижегородский государственный университет им. Н.И. Лобачевского',
+    logo: '🔬',
+    region: 'Нижегородская область',
+    address: 'г. Нижний Новгород, пр. Гагарина, д. 23',
+    metroStation: 'Горьковская',
+    coordinates: { lat: 56.299, lng: 43.985 },
+    isState: true,
+    isHead: true,
+    hasMilitary: true,
+    hasDorm: true,
+    dormPriceMonthly: 1100,
+    dormRating: 4.2,
+    minPassingScore: 232,
+    avgPassingScore: 254,
+    minTuition: 175000,
+    budgetSlotsTotal: 2200,
+    reviewsCount: 165,
+    positiveReviewsCount: 125,
+    neutralReviewsCount: 28,
+    negativeReviewsCount: 12,
+    globalRank: 10,
+    reviewRank: 9,
+    egeRank: 10,
+    costRank: 4,
+    studentSatisfaction: 76,
+    description: 'Ведущий классический университет Приволжья. Сильнейшие традиции радиофизики, суперкомпьютерных вычислений и биомедицины, активные партнерства с IT-кластером Нижнего Новгорода.',
+    faculties: [
+      {
+        id: 'unn-itmm',
+        name: 'Институт информационных технологий, математики и механики (ИИТММ)',
+        programs: [
+          {
+            id: 'unn-pmi',
+            code: '01.03.02',
+            name: 'Прикладная математика и информатика',
+            facultyName: 'ИИТММ',
+            degree: 'Бакалавриат',
+            budgetSlots: 95,
+            paidSlots: 45,
+            passingScoreBudget: 256,
+            passingScorePaid: 155,
+            tuitionPerYear: 185000,
+            durationYears: 4,
+            subjects: [
+              { subject: 'Русский язык', minScore: 50 },
+              { subject: 'Профильная математика', minScore: 55 },
+              { subject: 'Информатика (ИКТ)', minScore: 55 }
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];
 
@@ -554,6 +795,32 @@ export const REVIEWS: Review[] = [
     },
     likes: 142,
     commentsCount: 28,
+    comments: [
+      {
+        id: 'c-1',
+        author: 'Артем К.',
+        status: 'Студент 3 курса ФКН',
+        date: '19 октября 2026',
+        text: 'Плюсую насчет накопительной системы. Если забивать в первой половине семестра, потом автомат получить нереально. Но зато к сессии подходишь спокойно.',
+        likes: 19
+      },
+      {
+        id: 'c-2',
+        author: 'Даниил',
+        status: 'Абитуриент',
+        date: '21 октября 2026',
+        text: 'Подскажите, а общежитие в Одинцово дают всем или только тем, кто без троек?',
+        likes: 8
+      },
+      {
+        id: 'c-3',
+        author: 'Михаил Т. (автор)',
+        status: 'Студент',
+        date: '21 октября 2026',
+        text: 'Даниил, общежитие в Дубках гарантировано всем иногородним первокурсникам-бюджетникам вне зависимости от баллов. Добираться на электричке около 40 минут до Славянского бульвара.',
+        likes: 24
+      }
+    ],
     officialReply: {
       representativeName: 'Деканат ФКН НИУ ВШЭ',
       role: 'Официальный представитель вуза',
@@ -581,6 +848,24 @@ export const REVIEWS: Review[] = [
     },
     likes: 98,
     commentsCount: 15,
+    comments: [
+      {
+        id: 'c-4',
+        author: 'Сергей И.',
+        status: 'Студент 2 курса АВТИ',
+        date: '13 сентября 2026',
+        text: 'Про общаги чистая правда. До 1 корпуса идти 4 минуты, зимой в тапках можно добежать. Столовые тоже дешевые и вкусные.',
+        likes: 14
+      },
+      {
+        id: 'c-5',
+        author: 'Мария',
+        status: 'Выпускница',
+        date: '14 сентября 2026',
+        text: 'Кафедра ВТ действительно сильная. Выпустилась в 2023, работаю C++ разработчиком в Касперском. База по ОС и сетям пригодилась на 100%.',
+        likes: 11
+      }
+    ],
     officialReply: {
       representativeName: 'Управление общественных связей НИУ МЭИ',
       role: 'Официальный представитель вуза',
@@ -1009,6 +1294,58 @@ export const ARTICLES: Article[] = [
       'В государственных университетах общежитие гарантируется студентам очной бюджетной формы обучения, проживающим далее определенного радиуса (обычно от 50 до 100 км от МКАД / КАД).',
       'Стоимость проживания в среднем составляет от 800 до 2500 рублей в месяц для бюджетников. Обратите внимание, что некоторые вузы селят первокурсников в отдаленные кампусы или арендованные гостиницы.'
     ]
+  },
+  {
+    id: 'art-4',
+    title: 'Москва vs. Питер: куда поступать и где студенту жить комфортнее?',
+    category: 'Студенческая жизнь',
+    excerpt: 'Сравнение двух столиц: стоимость аренды, общежития, транспортные льготы, карьерные старты и студенческий вайб.',
+    readTime: '7 мин',
+    views: 135800,
+    date: '22 октября 2026',
+    content: [
+      'Москва предлагает больше крупных головных офисов корпораций, зарплаты стажеров выше на 25-35%, а льготный проездной по карте москвича действует на метро, МЦД и МЦК.',
+      'В Санкт-Петербурге темп жизни более размеренный, жилье вблизи вузов доступнее, но важно учитывать климат и то, что многие общежития (например, ПУНК СПбГУ) вынесены в пригород (Петергоф).'
+    ]
+  },
+  {
+    id: 'art-5',
+    title: 'Словарь абитуриента: сложные термины поступления простым языком',
+    category: 'Поступление',
+    excerpt: 'Что такое БВИ, целевая квота, зеленая волна, согласие на зачисление и отметка на Госуслугах — разбираем без бюрократии.',
+    readTime: '6 мин',
+    views: 102400,
+    date: '15 октября 2026',
+    content: [
+      'БВИ (без вступительных испытаний) — наивысшая льгота для победителей и призеров олимпиад Всероса и перечня РСОШ 1-2 уровня. Зачисляет вас на бюджет вне основного конкурса.',
+      'Оригинал аттестата / Электронная отметка — юридическое подтверждение вашего намерения учиться только в этом конкретном вузе. Подать можно строго в ОДНО место одновременно.'
+    ]
+  },
+  {
+    id: 'art-6',
+    title: 'Олимпиады РСОШ и Всерос: как поступить на бюджет еще весной',
+    category: 'Олимпиады и БВИ',
+    excerpt: 'Полный гид по перечневым олимпиадам: уровни (1, 2, 3), подтверждение 75 баллами ЕГЭ и вузовские льготы.',
+    readTime: '9 мин',
+    views: 89300,
+    date: '08 октября 2026',
+    content: [
+      'Олимпиады из перечня Минобрнауки (РСОШ) дают либо БВИ (поступление без экзаменов), либо 100 баллов за профильный предмет ЕГЭ.',
+      'Главное условие: диплом олимпиады обязательно нужно «подтвердить», набрав на ЕГЭ по профильному предмету не менее 75 баллов (в некоторых топ-вузах вуз требует 80-85 баллов).'
+    ]
+  },
+  {
+    id: 'art-7',
+    title: 'Целевое обучение 2026: новые правила через портал «Работа в России»',
+    category: 'Поступление',
+    excerpt: 'Как заключить договор с работодателем, кто оплачивает стипендию и сколько лет придется отработать после выпуска.',
+    readTime: '8 мин',
+    views: 74200,
+    date: '01 октября 2026',
+    content: [
+      'С 2024–2026 годов все предложения заказчиков целевого обучения публикуются централизованно на единой платформе «Работа в России».',
+      'Заказчик обязан выплачивать студенту ежемесячные меры поддержки (доп. стипендию, оплату жилья). Срок обязательной отработки составляет от 3 до 5 лет. В случае отказа от отработки придется возместить государству полную стоимость обучения.'
+    ]
   }
 ];
 
@@ -1068,3 +1405,349 @@ export const SPECIALTIES: SpecialtyInfo[] = [
     universitiesCount: 190
   }
 ];
+
+export const TOP_SPECIALTIES: TopSpecialty[] = [
+  {
+    rank: 1,
+    code: '38.03.01',
+    name: 'Экономика',
+    sharePercent: 5.23,
+    category: 'Экономика и Бизнес',
+    degree: 'Бакалавриат',
+    medianSalary: 130000,
+    avgBudgetScore: 288,
+    budgetGrowth: '+2% мест',
+    topUniversity: 'НИУ ВШЭ',
+    universitiesCount: 245,
+    totalGraduatesYear: 38200
+  },
+  {
+    rank: 2,
+    code: '40.03.01',
+    name: 'Юриспруденция',
+    sharePercent: 4.81,
+    category: 'Юриспруденция и Право',
+    degree: 'Бакалавриат',
+    medianSalary: 125000,
+    avgBudgetScore: 292,
+    budgetGrowth: '-1% мест',
+    topUniversity: 'МГУ им. М.В. Ломоносова',
+    universitiesCount: 210,
+    totalGraduatesYear: 34500
+  },
+  {
+    rank: 3,
+    code: '38.03.02',
+    name: 'Менеджмент',
+    sharePercent: 4.45,
+    category: 'Экономика и Бизнес',
+    degree: 'Бакалавриат',
+    medianSalary: 120000,
+    avgBudgetScore: 284,
+    budgetGrowth: '+3% мест',
+    topUniversity: 'СПбГУ',
+    universitiesCount: 230,
+    totalGraduatesYear: 31000
+  },
+  {
+    rank: 4,
+    code: '09.03.01',
+    name: 'Информатика и вычислительная техника',
+    sharePercent: 3.92,
+    category: 'IT и ИИ',
+    degree: 'Бакалавриат',
+    medianSalary: 155000,
+    avgBudgetScore: 268,
+    budgetGrowth: '+12% мест',
+    topUniversity: 'МГТУ им. Н.Э. Баумана',
+    universitiesCount: 185,
+    totalGraduatesYear: 26500
+  },
+  {
+    rank: 5,
+    code: '09.03.03',
+    name: 'Прикладная информатика',
+    sharePercent: 3.12,
+    category: 'IT и ИИ',
+    degree: 'Бакалавриат',
+    medianSalary: 160000,
+    avgBudgetScore: 275,
+    budgetGrowth: '+14% мест',
+    topUniversity: 'НИУ ВШЭ',
+    universitiesCount: 170,
+    totalGraduatesYear: 22400
+  },
+  {
+    rank: 6,
+    code: '09.03.04',
+    name: 'Программная инженерия',
+    sharePercent: 2.85,
+    category: 'IT и ИИ',
+    degree: 'Бакалавриат',
+    medianSalary: 185000,
+    avgBudgetScore: 295,
+    budgetGrowth: '+15% мест',
+    topUniversity: 'НИУ ВШЭ / МФТИ',
+    universitiesCount: 145,
+    totalGraduatesYear: 19800
+  },
+  {
+    rank: 7,
+    code: '31.05.01',
+    name: 'Лечебное дело',
+    sharePercent: 2.64,
+    category: 'Медицина и Здравоохранение',
+    degree: 'Специалитет',
+    medianSalary: 110000,
+    avgBudgetScore: 282,
+    budgetGrowth: '+5% мест (квоты)',
+    topUniversity: 'Первый МГМУ им. Сеченова',
+    universitiesCount: 65,
+    totalGraduatesYear: 18200
+  },
+  {
+    rank: 8,
+    code: '44.03.01',
+    name: 'Педагогическое образование',
+    sharePercent: 2.42,
+    category: 'Гуманитарные и Медиа',
+    degree: 'Бакалавриат',
+    medianSalary: 75000,
+    avgBudgetScore: 235,
+    budgetGrowth: '+7% мест',
+    topUniversity: 'МПГУ',
+    universitiesCount: 160,
+    totalGraduatesYear: 17500
+  },
+  {
+    rank: 9,
+    code: '42.03.01',
+    name: 'Реклама и связи с общественностью',
+    sharePercent: 2.15,
+    category: 'Гуманитарные и Медиа',
+    degree: 'Бакалавриат',
+    medianSalary: 115000,
+    avgBudgetScore: 288,
+    budgetGrowth: '+1% мест',
+    topUniversity: 'МГИМО / НИУ ВШЭ',
+    universitiesCount: 140,
+    totalGraduatesYear: 15200
+  },
+  {
+    rank: 10,
+    code: '10.03.01',
+    name: 'Информационная безопасность',
+    sharePercent: 2.05,
+    category: 'IT и ИИ',
+    degree: 'Бакалавриат',
+    medianSalary: 170000,
+    avgBudgetScore: 278,
+    budgetGrowth: '+16% мест',
+    topUniversity: 'МГТУ им. Н.Э. Баумана',
+    universitiesCount: 110,
+    totalGraduatesYear: 14100
+  },
+  {
+    rank: 11,
+    code: '08.03.01',
+    name: 'Строительство',
+    sharePercent: 1.85,
+    category: 'Инженерия и Технологии',
+    degree: 'Бакалавриат',
+    medianSalary: 115000,
+    avgBudgetScore: 230,
+    budgetGrowth: '+4% мест',
+    topUniversity: 'НИУ МГСУ',
+    universitiesCount: 125,
+    totalGraduatesYear: 13000
+  },
+  {
+    rank: 12,
+    code: '38.03.05',
+    name: 'Бизнес-информатика',
+    sharePercent: 1.78,
+    category: 'IT и ИИ',
+    degree: 'Бакалавриат',
+    medianSalary: 165000,
+    avgBudgetScore: 289,
+    budgetGrowth: '+8% мест',
+    topUniversity: 'НИУ ВШЭ',
+    universitiesCount: 95,
+    totalGraduatesYear: 12200
+  },
+  {
+    rank: 13,
+    code: '31.05.03',
+    name: 'Стоматология',
+    sharePercent: 1.65,
+    category: 'Медицина и Здравоохранение',
+    degree: 'Специалитет',
+    medianSalary: 140000,
+    avgBudgetScore: 294,
+    budgetGrowth: '0% мест',
+    topUniversity: 'МГМСУ им. Евдокимова',
+    universitiesCount: 55,
+    totalGraduatesYear: 10500
+  },
+  {
+    rank: 14,
+    code: '01.03.02',
+    name: 'Прикладная математика и информатика',
+    sharePercent: 1.61,
+    category: 'IT и ИИ',
+    degree: 'Бакалавриат',
+    medianSalary: 195000,
+    avgBudgetScore: 302,
+    budgetGrowth: '+10% мест',
+    topUniversity: 'МФТИ / МГУ',
+    universitiesCount: 120,
+    totalGraduatesYear: 10200
+  },
+  {
+    rank: 15,
+    code: '41.03.05',
+    name: 'Международные отношения',
+    sharePercent: 1.52,
+    category: 'Гуманитарные и Медиа',
+    degree: 'Бакалавриат',
+    medianSalary: 135000,
+    avgBudgetScore: 297,
+    budgetGrowth: '-2% мест',
+    topUniversity: 'МГИМО МИД России',
+    universitiesCount: 60,
+    totalGraduatesYear: 9800
+  },
+  {
+    rank: 16,
+    code: '07.03.01',
+    name: 'Архитектура',
+    sharePercent: 1.38,
+    category: 'Инженерия и Технологии',
+    degree: 'Бакалавриат',
+    medianSalary: 120000,
+    avgBudgetScore: 360,
+    budgetGrowth: '+3% мест',
+    topUniversity: 'МАРХИ',
+    universitiesCount: 50,
+    totalGraduatesYear: 8900
+  }
+];
+
+export const ADMISSIONS_DEADLINES: AdmissionsDeadline[] = [
+  {
+    id: 'dl-1',
+    date: '20 июня 2026',
+    title: 'Старт приёма документов',
+    stage: 'Прием документов',
+    isCritical: false,
+    targetAudience: 'Все абитуриенты',
+    description: 'Вузы открывают приём заявлений на все формы обучения. Документы можно подавать через портал «Госуслуги» (суперсервис), через личные кабинеты вузов или лично.',
+    officialDocument: 'Приказ Минобрнауки РФ №1076',
+    tips: 'Проверьте заранее подтвержденную учетную запись на Госуслугах и совпадение паспортных данных со СНИЛС.'
+  },
+  {
+    id: 'dl-2',
+    date: '7 июля 2026',
+    time: '18:00 МСК',
+    title: 'Дедлайн для сдающих творческие и профессиональные ДВИ',
+    stage: 'Прием документов',
+    isCritical: true,
+    targetAudience: 'Все абитуриенты',
+    description: 'Окончание приема заявлений от поступающих на направления с дополнительными вступительными испытаниями (Архитектура, Журналистика, Дизайн, Физическая культура, Театр).',
+    officialDocument: 'Правила приема вузов',
+    tips: 'Обязательно скачайте расписание внутренних экзаменов и зарегистрируйтесь в системе прокторинга.'
+  },
+  {
+    id: 'dl-3',
+    date: '20 июля 2026',
+    title: 'Завершение всех внутренних вступительных испытаний',
+    stage: 'ДВИ и вступительные',
+    isCritical: false,
+    targetAudience: 'Все абитуриенты',
+    description: 'Вузы проводят последние экзамены для выпускников колледжей и абитуриентов, сдающих профильные испытания вместо ЕГЭ.',
+    officialDocument: 'Порядок приема в вузы',
+    tips: 'В случае несогласия с баллом подавайте апелляцию в течение 24 часов после публикации результатов.'
+  },
+  {
+    id: 'dl-4',
+    date: '25 июля 2026',
+    time: '18:00 МСК',
+    title: 'Завершение приема документов от поступающих по ЕГЭ',
+    stage: 'Прием документов',
+    isCritical: true,
+    targetAudience: 'Все абитуриенты',
+    description: 'Последний день, когда можно подать или отредактировать заявление в 5 выбранных вузов (до 5 направлений в каждом). После 18:00 изменить список специальностей невозможно.',
+    officialDocument: 'Единый регламент Минобрнауки',
+    tips: 'Убедитесь, что все ваши заявления получили статус «Принято вузом» на Госуслугах.'
+  },
+  {
+    id: 'dl-5',
+    date: '27 июля 2026',
+    time: '09:00 МСК',
+    title: 'Публикация конкурсных списков',
+    stage: 'Конкурсные списки',
+    isCritical: true,
+    targetAudience: 'Все абитуриенты',
+    description: 'Вузы публикуют официальные ранжированные списки поступающих по СНИЛС без указания ФИО. Начинается ключевая фаза оценки реальных шансов.',
+    officialDocument: 'Федеральная база ФИС ГИА и Приема',
+    tips: 'Используйте наш Премиум-симулятор для очистки списков от «призраков» (тех, у кого нет оригиналов).'
+  },
+  {
+    id: 'dl-6',
+    date: '28 июля 2026',
+    time: '12:00 МСК',
+    title: 'День X: Оригиналы для БВИ и квотников',
+    stage: 'Подача оригиналов',
+    isCritical: true,
+    targetAudience: 'БВИ и квотники',
+    description: 'Крайний срок подачи оригинала аттестата (или выставления отметки на Госуслугах) для поступающих без вступительных испытаний (олимпиадники) и по особой/целевой/отдельной квоте.',
+    officialDocument: 'Приказ о приеме, этап приоритетного зачисления',
+    tips: 'Ровно в 12:00 кнопка подачи оригинала на Госуслугах блокируется. Не откладывайте на последние 10 минут!'
+  },
+  {
+    id: 'dl-7',
+    date: '29–30 июля 2026',
+    title: 'Приказы о приоритетном зачислении',
+    stage: 'Приказы',
+    isCritical: false,
+    targetAudience: 'БВИ и квотники',
+    description: 'Ректоры подписывают первые приказы о зачислении олимпиадников и целевиков. Неиспользованные квотные места переходят в общий конкурс основного этапа.',
+    officialDocument: 'Приказы о зачислении',
+    tips: 'Проверьте точное количество оставшихся мест общего конкурса — часто их становится больше за счет невыбранных квот!'
+  },
+  {
+    id: 'dl-8',
+    date: '3 августа 2026',
+    time: '12:00 МСК',
+    title: 'Главный дедлайн года: Оригиналы основного этапа',
+    stage: 'Подача оригиналов',
+    isCritical: true,
+    targetAudience: 'Основной этап (ЕГЭ)',
+    description: 'Момент истины для 90% абитуриентов страны. Завершение приема оригиналов документов об образовании на бюджетные места основного конкурса.',
+    officialDocument: 'Единый регламент зачисления в РФ',
+    tips: 'Следите за динамикой проходного балла в последние 3 часа. Подавайте оригинал только туда, где вы стабильно проходите в пределах контрольных цифр приема.'
+  },
+  {
+    id: 'dl-9',
+    date: '4–9 августа 2026',
+    title: 'Издание приказов основного этапа зачисления',
+    stage: 'Приказы',
+    isCritical: false,
+    targetAudience: 'Основной этап (ЕГЭ)',
+    description: 'Вузы публикуют официальные приказы о зачислении на бюджетные места бакалавриата и специалитета. Вы — студент!',
+    officialDocument: 'Приказы о зачислении вузов',
+    tips: 'После выхода приказа свяжитесь с куратором курса и подайте заявление на общежитие.'
+  },
+  {
+    id: 'dl-10',
+    date: '20 августа 2026',
+    title: 'Завершение приема на платное обучение',
+    stage: 'Приказы',
+    isCritical: false,
+    targetAudience: 'Платное обучение',
+    description: 'Окончание заключения договоров и оплаты первого семестра для студентов платной формы обучения.',
+    officialDocument: 'Локальные акты вузов',
+    tips: 'Не забудьте оформить льготный образовательный кредит с господдержкой под 3% годовых.'
+  }
+];
+

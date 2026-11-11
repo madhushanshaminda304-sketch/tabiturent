@@ -7,6 +7,8 @@ import { EgeCalculator } from './components/EgeCalculator';
 import { PaidCalculator } from './components/PaidCalculator';
 import { PodborWizard } from './components/PodborWizard';
 import { Top100Programs } from './components/Top100Programs';
+import { TopSpecialtiesSection } from './components/TopSpecialtiesSection';
+import { AdmissionsCalendar } from './components/AdmissionsCalendar';
 import { DormInspector } from './components/DormInspector';
 import { UniversityPartnerPortal } from './components/UniversityPartnerPortal';
 import { UniversityMap } from './components/UniversityMap';
@@ -19,6 +21,9 @@ import { OpenDaysSection } from './components/OpenDaysSection';
 import { QnaSection } from './components/QnaSection';
 import { ArticlesSection } from './components/ArticlesSection';
 import { BookmarksDrawer } from './components/BookmarksDrawer';
+import { SubmitReviewModal } from './components/SubmitReviewModal';
+import { AdvertiserPortalModal } from './components/AdvertiserPortalModal';
+import { FeedbackModal } from './components/FeedbackModal';
 import { Footer } from './components/Footer';
 import { UNIVERSITIES } from './data/mockData';
 import { University } from './types';
@@ -41,6 +46,9 @@ export const App: React.FC = () => {
   const [isCompareOpen, setIsCompareOpen] = useState<boolean>(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState<boolean>(false);
   const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+  const [isSubmitReviewOpen, setIsSubmitReviewOpen] = useState<boolean>(false);
+  const [isAdvOpen, setIsAdvOpen] = useState<boolean>(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState<boolean>(false);
 
   // Bookmarks & Compare persistent state
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
@@ -110,41 +118,84 @@ export const App: React.FC = () => {
     setBookmarkedIds([]);
   };
 
-  // Filtered universities
+  const handleSelectUniByName = (name: string) => {
+    const found = UNIVERSITIES.find(
+      (u) =>
+        u.name.toLowerCase().includes(name.toLowerCase()) ||
+        name.toLowerCase().includes(u.name.toLowerCase())
+    );
+    if (found) {
+      setSelectedUniversity(found);
+    } else {
+      setActiveTab('vuz');
+      setSearchQuery(name);
+    }
+  };
+
+  // Filtered universities for Tab 1
   const filteredUniversities = useMemo(() => {
-    return UNIVERSITIES.filter(u => {
-      // Name or abbreviation
-      if (searchQuery) {
+    return UNIVERSITIES.filter((uni) => {
+      // Search Query
+      if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchName = u.name.toLowerCase().includes(q);
-        const matchFullName = u.fullName.toLowerCase().includes(q);
-        if (!matchName && !matchFullName) return false;
+        const matchesName = uni.name.toLowerCase().includes(q) || uni.fullName.toLowerCase().includes(q);
+        const matchesDesc = uni.description.toLowerCase().includes(q);
+        const matchesFaculty = uni.faculties.some(f => 
+          f.name.toLowerCase().includes(q) || 
+          f.programs.some(p => p.name.toLowerCase().includes(q) || p.code.includes(q))
+        );
+        if (!matchesName && !matchesDesc && !matchesFaculty) return false;
       }
-      // Region
-      if (selectedRegion !== 'Все регионы' && u.region !== selectedRegion) {
+
+      // Region Filter
+      if (selectedRegion !== 'Все регионы' && uni.region !== selectedRegion) {
         return false;
       }
-      // State Only
-      if (filterStateOnly && !u.isState) return false;
-      // Military
-      if (filterMilitary && !u.hasMilitary) return false;
-      // Dorm
-      if (filterDorm && !u.hasDorm) return false;
+
+      // Area Filter
+      if (selectedArea !== 'Все направления') {
+        const matchesArea = uni.faculties.some(f => 
+          f.programs.some(p => {
+            if (selectedArea === 'Математика и IT') {
+              return p.code.startsWith('01.') || p.code.startsWith('02.') || p.code.startsWith('09.') || p.code.startsWith('10.');
+            }
+            if (selectedArea === 'Инженерия и технологии') {
+              return p.code.startsWith('11.') || p.code.startsWith('12.') || p.code.startsWith('13.') || p.code.startsWith('15.') || p.code.startsWith('24.') || p.code.startsWith('08.');
+            }
+            if (selectedArea === 'Экономика и управление') {
+              return p.code.startsWith('38.');
+            }
+            if (selectedArea === 'Медицина и биоинженерия') {
+              return p.code.startsWith('31.') || p.code.startsWith('32.') || p.code.startsWith('33.') || p.code.startsWith('19.');
+            }
+            if (selectedArea === 'Гуманитарные и социальные науки') {
+              return p.code.startsWith('40.') || p.code.startsWith('41.') || p.code.startsWith('42.') || p.code.startsWith('45.') || p.code.startsWith('46.');
+            }
+            return true;
+          })
+        );
+        if (!matchesArea) return false;
+      }
+
+      // Checkbox filters
+      if (filterStateOnly && !uni.isState) return false;
+      if (filterMilitary && !uni.hasMilitary) return false;
+      if (filterDorm && !uni.hasDorm) return false;
 
       return true;
     });
-  }, [searchQuery, selectedRegion, filterStateOnly, filterMilitary, filterDorm]);
-
-  const bookmarkedUniversities = useMemo(() => {
-    return UNIVERSITIES.filter(u => bookmarkedIds.includes(u.id));
-  }, [bookmarkedIds]);
+  }, [searchQuery, selectedRegion, selectedArea, filterStateOnly, filterMilitary, filterDorm]);
 
   const comparedUniversities = useMemo(() => {
     return UNIVERSITIES.filter(u => comparedIds.includes(u.id));
   }, [comparedIds]);
 
+  const bookmarkedUniversities = useMemo(() => {
+    return UNIVERSITIES.filter(u => bookmarkedIds.includes(u.id));
+  }, [bookmarkedIds]);
+
   return (
-    <div className="min-h-screen flex flex-col bg-tabi-bg text-slate-800 w-full overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans selection:bg-blue-600 selection:text-white">
       
       {/* Global Header */}
       <Header
@@ -155,6 +206,7 @@ export const App: React.FC = () => {
         openCompare={() => setIsCompareOpen(true)}
         openBookmarks={() => setIsBookmarksOpen(true)}
         openAuth={() => setIsAuthOpen(true)}
+        openSubmitReview={() => setIsSubmitReviewOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -256,38 +308,46 @@ export const App: React.FC = () => {
         {/* TAB 5: Top-100 Programs */}
         {activeTab === '100program' && <Top100Programs />}
 
-        {/* TAB 6: Reviews ("Сливы") */}
+        {/* TAB 6: Top Specialties Ranking РФ */}
+        {activeTab === 'topspec' && (
+          <TopSpecialtiesSection onSelectUniversityByName={handleSelectUniByName} />
+        )}
+
+        {/* TAB 7: Admissions Calendar 2026 */}
+        {activeTab === 'calendar' && <AdmissionsCalendar />}
+
+        {/* TAB 8: Reviews ("Сливы") */}
         {activeTab === 'reviews' && <ReviewsSection />}
 
-        {/* TAB 7: Dorm Inspector */}
+        {/* TAB 9: Dorm Inspector */}
         {activeTab === 'dorms' && <DormInspector />}
 
-        {/* TAB 8: Rankings */}
+        {/* TAB 10: Rankings */}
         {activeTab === 'rankings' && (
           <RankingsSection onSelectUniversity={(u) => setSelectedUniversity(u)} />
         )}
 
-        {/* TAB 9: University & Campus Map */}
+        {/* TAB 11: University & Campus Map */}
         {activeTab === 'map' && (
           <UniversityMap onSelectUniversity={(u) => setSelectedUniversity(u)} />
         )}
 
-        {/* TAB 10: Specialties */}
+        {/* TAB 12: Specialties (OKSO) */}
         {activeTab === 'specialties' && <SpecialtiesSection />}
 
-        {/* TAB 11: Open Doors Days */}
+        {/* TAB 13: Open Doors Days */}
         {activeTab === 'dod' && <OpenDaysSection />}
 
-        {/* TAB 12: Q&A Community */}
+        {/* TAB 14: Q&A Community */}
         {activeTab === 'qna' && <QnaSection />}
 
-        {/* TAB 13: Articles & Guides */}
+        {/* TAB 15: Articles & Guides */}
         {activeTab === 'articles' && <ArticlesSection />}
 
-        {/* TAB 14: University Partner Portal */}
+        {/* TAB 16: University Partner Portal */}
         {activeTab === 'vuzam' && <UniversityPartnerPortal />}
 
-        {/* TAB 15: Premium Wave Tracker */}
+        {/* TAB 17: Premium Wave Tracker */}
         {activeTab === 'premium' && <PremiumAnalytics />}
 
       </main>
@@ -324,13 +384,38 @@ export const App: React.FC = () => {
         comparedIds={comparedIds}
       />
 
+      {/* Submit Review Modal */}
+      <SubmitReviewModal
+        isOpen={isSubmitReviewOpen}
+        onClose={() => setIsSubmitReviewOpen(false)}
+        onSubmitReview={() => {
+          setActiveTab('reviews');
+        }}
+      />
+
+      {/* Advertiser Portal / KP Modal */}
+      <AdvertiserPortalModal
+        isOpen={isAdvOpen}
+        onClose={() => setIsAdvOpen(false)}
+      />
+
+      {/* Feedback / Moderation Modal */}
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+      />
+
       {/* Auth Modal (Mock Sign-In) */}
       {isAuthOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
           <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-base font-bold text-slate-900">Вход в Табитуриент</h3>
-              <button onClick={() => setIsAuthOpen(false)} className="text-slate-400 hover:text-slate-600">
+              <button 
+                onClick={() => setIsAuthOpen(false)} 
+                className="text-slate-400 hover:text-slate-600"
+                aria-label="Закрыть"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -356,7 +441,12 @@ export const App: React.FC = () => {
       )}
 
       {/* Global Footer */}
-      <Footer setActiveTab={setActiveTab} />
+      <Footer 
+        setActiveTab={setActiveTab} 
+        openAdvModal={() => setIsAdvOpen(true)}
+        openFeedbackModal={() => setIsFeedbackOpen(true)}
+        openSubmitReview={() => setIsSubmitReviewOpen(true)}
+      />
 
     </div>
   );

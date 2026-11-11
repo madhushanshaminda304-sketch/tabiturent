@@ -1,6 +1,6 @@
 import json
 
-with open('.pipeline/lh-expanded.json', 'r', encoding='utf-8') as f:
+with open('.pipeline/lh-latest.json', 'r', encoding='utf-8') as f:
     d = json.load(f)
 print("=== Final Expanded Lighthouse Scores ===")
 for k, v in d.get('categories', {}).items():

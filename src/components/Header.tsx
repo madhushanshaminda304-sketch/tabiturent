@@ -18,7 +18,10 @@ import {
   Award,
   Home,
   Navigation,
-  ShieldCheck
+  ShieldCheck,
+  TrendingUp,
+  CalendarCheck,
+  PlusCircle
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -29,6 +32,7 @@ interface HeaderProps {
   openCompare: () => void;
   openBookmarks: () => void;
   openAuth: () => void;
+  openSubmitReview?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -38,7 +42,8 @@ export const Header: React.FC<HeaderProps> = ({
   bookmarksCount,
   openCompare,
   openBookmarks,
-  openAuth
+  openAuth,
+  openSubmitReview
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -48,6 +53,8 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'calculator', label: 'Калькулятор ЕГЭ', icon: Calculator },
     { id: 'calculator_pay', label: 'Платное (3%)', icon: DollarSign },
     { id: '100program', label: 'Топ-100 программ', icon: Award },
+    { id: 'topspec', label: 'Топ направлений РФ', icon: TrendingUp },
+    { id: 'calendar', label: 'Календарь 2026', icon: CalendarCheck },
     { id: 'reviews', label: 'Отзывы («Сливы»)', icon: MessageSquareText },
     { id: 'dorms', label: 'Общаги', icon: Home },
     { id: 'rankings', label: 'Рейтинги', icon: Trophy },
@@ -89,8 +96,20 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Quick Action Buttons (Compare, Bookmarks, Login) */}
+          {/* Quick Action Buttons (Submit review, Compare, Bookmarks, Login) */}
           <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+            
+            {/* Submit Review action button */}
+            {openSubmitReview && (
+              <button
+                onClick={openSubmitReview}
+                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600/90 hover:bg-emerald-600 text-white transition-all shadow-sm border border-emerald-500/50 hover:scale-[1.02]"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>Прислать слив</span>
+              </button>
+            )}
+
             {/* Compare Button */}
             <button
               onClick={openCompare}
@@ -180,6 +199,15 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Dropdown Navigation */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-tabi-navyDark border-t border-slate-700 px-4 pt-2 pb-4 space-y-1 max-h-[75vh] overflow-y-auto">
+          {openSubmitReview && (
+            <button
+              onClick={() => { setMobileMenuOpen(false); openSubmitReview(); }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold bg-emerald-600 text-white mb-2"
+            >
+              <PlusCircle className="w-4 h-4" />
+              Прислать отзыв о своем вузе
+            </button>
+          )}
           {primaryNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
