@@ -24,10 +24,11 @@ import { BookmarksDrawer } from './components/BookmarksDrawer';
 import { SubmitReviewModal } from './components/SubmitReviewModal';
 import { AdvertiserPortalModal } from './components/AdvertiserPortalModal';
 import { FeedbackModal } from './components/FeedbackModal';
+import { AuthModal } from './components/AuthModal';
 import { Footer } from './components/Footer';
 import { UNIVERSITIES } from './data/mockData';
 import { University } from './types';
-import { Building2, X } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 
 export const App: React.FC = () => {
   // Navigation
@@ -405,40 +406,11 @@ export const App: React.FC = () => {
         onClose={() => setIsFeedbackOpen(false)}
       />
 
-      {/* Auth Modal (Mock Sign-In) */}
-      {isAuthOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-base font-bold text-slate-900">Вход в Табитуриент</h3>
-              <button 
-                onClick={() => setIsAuthOpen(false)} 
-                className="text-slate-400 hover:text-slate-600"
-                aria-label="Закрыть"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <p className="text-xs text-slate-600">
-              Войдите, чтобы сохранять персональные подборки программ, отслеживать изменения проходных баллов и оставлять проверенные отзывы.
-            </p>
-            <div className="space-y-2">
-              <button
-                onClick={() => { alert('Вход через VK ID успешно выполнен!'); setIsAuthOpen(false); }}
-                className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-sm"
-              >
-                Войти через VK ID
-              </button>
-              <button
-                onClick={() => { alert('Вход через Яндекс ID успешно выполнен!'); setIsAuthOpen(false); }}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors shadow-sm"
-              >
-                Войти через Яндекс
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+      />
 
       {/* Global Footer */}
       <Footer 
