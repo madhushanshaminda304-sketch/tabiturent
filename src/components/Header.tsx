@@ -12,7 +12,13 @@ import {
   GraduationCap, 
   Menu, 
   X,
-  User
+  User,
+  Sparkles,
+  DollarSign,
+  Award,
+  Home,
+  Navigation,
+  ShieldCheck
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -36,15 +42,22 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navItems = [
+  const primaryNavItems = [
     { id: 'vuz', label: 'Поиск вуза', icon: Building2 },
-    { id: 'specialties', label: 'Специальности', icon: GraduationCap },
+    { id: 'podbor', label: 'Подборка', icon: Sparkles },
     { id: 'calculator', label: 'Калькулятор ЕГЭ', icon: Calculator },
+    { id: 'calculator_pay', label: 'Платное (3%)', icon: DollarSign },
+    { id: '100program', label: 'Топ-100 программ', icon: Award },
     { id: 'reviews', label: 'Отзывы («Сливы»)', icon: MessageSquareText },
+    { id: 'dorms', label: 'Общаги', icon: Home },
     { id: 'rankings', label: 'Рейтинги', icon: Trophy },
+    { id: 'map', label: 'Карта', icon: Navigation },
+    { id: 'specialties', label: 'Специальности', icon: GraduationCap },
     { id: 'dod', label: 'Дни дверей', icon: Calendar },
     { id: 'qna', label: 'Вопросы', icon: HelpCircle },
     { id: 'articles', label: 'Статьи', icon: BookOpen },
+    { id: 'vuzam', label: 'Вузам', icon: ShieldCheck },
+    { id: 'premium', label: 'Премиум', icon: Sparkles },
   ];
 
   const handleNavClick = (id: string) => {
@@ -138,24 +151,24 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Desktop Main Navigation Tabs */}
-      <nav className="hidden md:block bg-tabi-navyDark/90 border-t border-slate-800/80">
+      {/* Desktop Main Navigation Tabs with Horizontal Scroll */}
+      <nav className="hidden md:block bg-tabi-navyDark/95 border-t border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-1 overflow-x-auto py-1.5 scrollbar-none">
-            {navItems.map((item) => {
+            {primaryNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`px-3.5 py-2 rounded-md text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-all ${
+                  className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 whitespace-nowrap transition-all ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-sm'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   {item.label}
                 </button>
               );
@@ -166,21 +179,21 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Dropdown Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-tabi-navyDark border-t border-slate-700 px-4 pt-2 pb-4 space-y-1">
-          {navItems.map((item) => {
+        <div className="md:hidden bg-tabi-navyDark border-t border-slate-700 px-4 pt-2 pb-4 space-y-1 max-h-[75vh] overflow-y-auto">
+          {primaryNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${
                   isActive
                     ? 'bg-blue-600 text-white'
                     : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 {item.label}
               </button>
             );

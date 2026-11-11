@@ -1,124 +1,73 @@
-# Tabiturient Remake Specification (.pipeline/spec.md)
+# Tabiturient Remake Expanded Specification (.pipeline/spec.md)
 
 ## 1. Executive Summary
-A modern, ultra-responsive, high-performance remake of **Табитуриент (tabiturient.ru)** — Russia's leading university admissions and review intelligence platform. Built with React, TypeScript, Next.js / Vite, Tailwind CSS, Lucide icons, and modern animations.
+A comprehensive, ultra-responsive, high-performance clone and modernization of **Табитуриент (tabiturient.ru)** — Russia's leading university admissions and review intelligence platform. Built with React 18, TypeScript, Vite, Tailwind CSS, Lucide icons, and modern zero-latency client reactivity.
 
-## 2. Architecture & Tech Stack
-- **Framework**: Vite + React 19 + TypeScript (instant HMR, fast builds, zero bloat, high client reactivity) or Next.js.
-  *(Vite + React + Tailwind + Lucide is ideal here for zero-latency client-side calculations, interactive filtering of universities/specialties, comparison tray, and smooth client-side routing).*
-- **Styling**: Tailwind CSS with custom design system tokens matching the Tabiturient visual aesthetic (Navy `#1a222e`, slate borders, modern cards, and emerald/amber/rose sentiment badges).
-- **Icons**: Lucide React.
-- **State Management**: React state + custom hooks + LocalStorage persistence for Saved Bookmarks and Comparison items.
-- **Data Layer**: Structured mock database in TypeScript with comprehensive records of top Russian universities (МГУ, МФТИ, ВШЭ, МЭИ, СПбГУ, МГТУ им. Баумана, ИТМО, РХТУ, РАНХиГС, НГУ, ТГУ, КФУ, УрФУ, etc.), faculties, admission programs with historical passing scores, tuition fees, student reviews, Q&A topics, articles, and open door days.
+## 2. All 15 Core Modules
 
-## 3. Core Modules & User Journeys
+### 1. Поиск вуза (University Search & Directory - `/`)
+- Real-time search by name, abbreviation (МЭИ, ВШЭ, Бауманка).
+- Filter by Region (Москва, Санкт-Петербург, Новосибирск, Казань, etc.).
+- Filter by Direction, State university, Military department, and Dormitory.
+- Detailed cards with review satisfaction bar, passing score, tuition, and budget seats.
 
-### Module 1: Universal Header & Navigation
-- Logo: Modernized "Табитуриент" wordmark with sub-label "Честный гид по вузам".
-- Navigation Tabs:
-  - 🏫 Поиск вуза (Search Universities)
-  - 🎓 Специальности (Specialties / Programs)
-  - 🧮 Калькулятор ЕГЭ (EGE Calculator)
-  - 💬 Отзывы ("Сливы") (Reviews)
-  - 🏆 Рейтинги (Rankings)
-  - ⚖️ Сравнение (Compare)
-  - 📅 Дни дверей (Open Days)
-  - ❓ Вопросы (Q&A)
-  - 📖 Статьи (Guides)
-- Action buttons:
-  - Bookmark counter badge
-  - University compare badge
-  - Login / Profile trigger modal
+### 2. Подборка образовательных программ (Smart Matcher Wizard - `/podbor`)
+- 5-step interactive questionnaire for applicants.
+- Custom score calculations evaluating goal, region, direction, priorities (dorm, military, career), and EGE score range.
+- Top-3 personalized recommendation matches with exact percentage match.
 
-### Module 2: University Search & Directory (Home)
-- Hero Search Section with dark navy backdrop:
-  - Live query input (search by university name, abbreviation, or city)
-  - Region selector dropdown (Все регионы, Москва, Санкт-Петербург, Новосибирск, Казань, etc.)
-  - Study Area dropdown (Информатика, Экономика, Медицина, Инженерия, Юриспруденция, etc.)
-  - Filter toggles:
-    - Только государственные (State only)
-    - Военная кафедра (Military department)
-    - Общежитие (Dormitories available)
-    - Бюджетные места (Budget seats)
-- University Cards Grid:
-  - Logo / Coat of arms, Full and short name, Region badge
-  - Key statistics: Reviews count and satisfaction % (green/gray/red bar), Min passing score, Tuition cost from, Military & Dorm badges
-  - Quick action: Add to Compare (⚖️), Bookmark (★), and "Подробнее" (Expand details)
-- University Detail Modal / Accordion:
-  - Full faculties and bachelor programs list
-  - Real cut-off passing scores (бюджет) and tuition fees
-  - Dormitory conditions and student feedback
-  - Review sentiment distribution chart
-  - Recent student reviews
+### 3. Калькулятор ЕГЭ (Admission Calculator - `/calculator`)
+- 11 EGE subjects with numeric score inputs (0–100) and toggles.
+- Quick presets (IT, Engineering, Economics, Humanities, Medicine).
+- Individual achievements score (+1 to +10).
+- Real-time chance calculation: Высокий шанс, Средний шанс, Рискованный.
 
-### Module 3: EGE Score Admission Calculator
-- 11 EGE subjects with numeric inputs (0–100) and toggles:
-  - Русский язык (mandatory)
-  - Профильная математика / Базовая математика
-  - Обществознание, Физика, Информатика (ИКТ), Химия, Биология, История, Английский язык, Литература, География.
-- Selection of preferences:
-  - Budget vs Paid tuition
-  - Desired Region(s)
-  - Target fields of study
-- Instant calculation algorithm:
-  - Evaluates user sum against program entrance cut-offs:
-    - **Высокий шанс (≥ cut-off + 5)**: Green badge
-    - **Средний шанс (cut-off - 5 to +4)**: Amber badge
-    - **Рискованный шанс (< cut-off - 5)**: Slate badge
-  - Shows exact gap in points, number of budget slots, and link to program details.
+### 4. Калькулятор платного обучения & Госкредит 3% (`/calculator/pay`)
+- Filter programs by annual tuition fee budget slider (150 000 to 900 000 ₽ / год).
+- Subsidized student loan simulator (3% annual interest, government subsidy, grace period payments of 150–900 ₽/month during study, 15-year repayment schedule).
 
-### Module 4: Paid Tuition Calculator
-- Filter programs by maximum annual tuition fee (e.g. slider from 100,000 to 700,000+ ₽/год).
-- Ranking of programs by cost vs review rating ratio ("Лучшая ценность").
+### 5. Топ-100 программ России (`/100program`)
+- National ranking of top undergraduate and specialist programs.
+- Sorting by rank, start salary, passing EGE score, and competition (чел/место).
 
-### Module 5: Student Reviews & "Сливы"
-- Review sentiment categorization:
-  - 🟢 Положительные (Positive)
-  - 🟡 Нейтральные (Neutral)
-  - 🔴 Отрицательные (Negative)
-- Detailed score breakdown per review:
-  - Качество преподавания (Teaching quality 1-5★)
-  - Коррупция / Взятки (Corruption level: Отсутствует / Редко / Присутствует)
-  - Состояние общежитий (Dormitory conditions 1-5★)
-  - Внеучебная жизнь (Student life 1-5★)
-  - Трудоустройство (Employment prospects 1-5★)
-- Review Submission Modal:
-  - Interactive form for submitting a review with sentiment, scores, and honest written text.
-  - Reviews immediately appear in the feed.
+### 6. Сливы отзывов студентов (`/slivlist`, `/sliv`)
+- Real unfiltered student reviews classified as Positive, Neutral, Negative.
+- Multi-criteria ratings (teaching, corruption, dorms, student life, career).
+- Verified official replies from university administrations.
+- Interactive submission form.
 
-### Module 6: League Tables & Rankings
-- 4 interactive tabbed rankings:
-  1. **Рейтинг по отзывам студентов**: ranked by positive review percentage and trust score.
-  2. **Глобальный рейтинг вузов**: composite national academic & career ranking.
-  3. **Рейтинг по проходному баллу**: sorted by average EGE score for budget admission.
-  4. **Рейтинг по стоимости обучения**: sorted from affordable to premium.
-- Filter rankings by region or search query.
+### 7. Инспектор студенческих общежитий («Общаги»)
+- Comprehensive dorm directory with inspection metrics:
+  - Cleanliness & pests (Тараканы / Клопы: Отсутствуют, Редко, Бывают).
+  - Warden strictness (Лояльный, Умеренный, Строгий).
+  - Curfew (24/7 или закрывается).
+  - Bathroom location, Wi-Fi speed, distance to metro & campus.
 
-### Module 7: University Comparison Tool (Side-by-Side)
-- Compare up to 4 selected universities simultaneously across:
-  - Средний балл ЕГЭ на бюджет
-  - Стоимость обучения в год
-  - % положительных отзывов студентов
-  - Общежитие и количество мест
-  - Наличие военной кафедры
-  - Количество бюджетных мест
-  - Возможность удалить / добавить университет.
+### 8. Сводные рейтинги вузов (`/rating`, `/globalrating`, `/vuzege`, `/vuzcost`)
+- 4 league tables: by student satisfaction, national global rank, passing scores, and tuition cost.
 
-### Module 8: Open Doors Days Calendar (Дни открытых дверей)
-- Upcoming events filterable by month, university, and format (Онлайн / Очно).
-- Event details, date, time, address, and registration link.
+### 9. Интерактивная карта кампусов и навигатор (`/map`)
+- City-by-city map navigator (Москва, Санкт-Петербург, Казань, Новосибирск) with metro stations and campus locations.
 
-### Module 9: Specialties & Career Directory
-- Taxonomy by official Russian OKSO codes (09.03.01, 01.03.02, 38.03.01, etc.).
-- Descriptions, required EGE subjects, average salary after graduation, and list of universities teaching each program.
+### 10. Каталог специальностей (ОКСО - `/np`)
+- Complete code classification (09.03.01, 09.03.04, 01.03.02, 38.03.01, etc.) with required exams, average salaries, and universities count.
 
-### Module 10: Questions & Answers (Q&A) Community
-- Applicant questions list with answers, views counter, and university tags.
-- "Задать вопрос" (Ask a question) modal with instant posting.
+### 11. Дни открытых дверей (ДОД - `/dod`)
+- Event calendar filterable by format (Очно / Онлайн) and registration links.
 
-### Module 11: Articles & Guides
-- Categorized guides for applicants (ЕГЭ, Поступление, БВИ и олимпиады, Общежития, Целевое обучение).
-- Full article reader modal / view.
+### 12. Сообщество вопросов и ответов (Q&A - `/question`)
+- Applicant Q&A feed with views, categories, and student answers.
+- "Задать вопрос" form.
 
-### Module 12: Bookmarks & Favorites
-- Fast access drawer / tab showing all bookmarked universities and programs with one-click export or compare.
+### 13. Статьи и база знаний (`/article`)
+- Editorial guides on admission calendar, Olympiads (БВИ), budgeting, and dorm survival.
+- Modal article reader.
+
+### 14. Кабинет представителя вуза («Вузам» - `/vuzam`)
+- Verification dashboard for university staff.
+- Official reply publisher with verification badge.
+- Open doors event publisher and view analytics.
+
+### 15. Премиум аналитика поступления & Трекер согласий (`/premium`)
+- Real-time simulation of competitive ranking lists.
+- Filters out non-original diploma submissions to compute true applicant rank.

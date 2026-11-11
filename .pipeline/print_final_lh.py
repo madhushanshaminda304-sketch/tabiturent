@@ -1,8 +1,8 @@
 import json
 
-with open('.pipeline/lh-after2.json', 'r', encoding='utf-8') as f:
+with open('.pipeline/lh-expanded.json', 'r', encoding='utf-8') as f:
     d = json.load(f)
-print("=== Final Rebuilt Lighthouse Scores ===")
+print("=== Final Expanded Lighthouse Scores ===")
 for k, v in d.get('categories', {}).items():
     score = v.get('score')
     print(f"  {k}: {int(score * 100) if score is not None else 0}")

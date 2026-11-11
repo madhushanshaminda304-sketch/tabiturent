@@ -4,6 +4,13 @@ import { HeroSearch } from './components/HeroSearch';
 import { UniversityCard } from './components/UniversityCard';
 import { UniversityDetailModal } from './components/UniversityDetailModal';
 import { EgeCalculator } from './components/EgeCalculator';
+import { PaidCalculator } from './components/PaidCalculator';
+import { PodborWizard } from './components/PodborWizard';
+import { Top100Programs } from './components/Top100Programs';
+import { DormInspector } from './components/DormInspector';
+import { UniversityPartnerPortal } from './components/UniversityPartnerPortal';
+import { UniversityMap } from './components/UniversityMap';
+import { PremiumAnalytics } from './components/PremiumAnalytics';
 import { ReviewsSection } from './components/ReviewsSection';
 import { RankingsSection } from './components/RankingsSection';
 import { ComparisonModal } from './components/ComparisonModal';
@@ -231,30 +238,57 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 2: Specialties */}
-        {activeTab === 'specialties' && <SpecialtiesSection />}
+        {/* TAB 2: Smart Podbor Wizard */}
+        {activeTab === 'podbor' && (
+          <PodborWizard onSelectUniversity={(u) => setSelectedUniversity(u)} />
+        )}
 
         {/* TAB 3: EGE Calculator */}
         {activeTab === 'calculator' && (
           <EgeCalculator onSelectUniversity={(u) => setSelectedUniversity(u)} />
         )}
 
-        {/* TAB 4: Reviews ("Сливы") */}
+        {/* TAB 4: Paid Tuition & 3% Loan Calculator */}
+        {activeTab === 'calculator_pay' && (
+          <PaidCalculator onSelectUniversity={(u) => setSelectedUniversity(u)} />
+        )}
+
+        {/* TAB 5: Top-100 Programs */}
+        {activeTab === '100program' && <Top100Programs />}
+
+        {/* TAB 6: Reviews ("Сливы") */}
         {activeTab === 'reviews' && <ReviewsSection />}
 
-        {/* TAB 5: Rankings */}
+        {/* TAB 7: Dorm Inspector */}
+        {activeTab === 'dorms' && <DormInspector />}
+
+        {/* TAB 8: Rankings */}
         {activeTab === 'rankings' && (
           <RankingsSection onSelectUniversity={(u) => setSelectedUniversity(u)} />
         )}
 
-        {/* TAB 6: Open Doors Days */}
+        {/* TAB 9: University & Campus Map */}
+        {activeTab === 'map' && (
+          <UniversityMap onSelectUniversity={(u) => setSelectedUniversity(u)} />
+        )}
+
+        {/* TAB 10: Specialties */}
+        {activeTab === 'specialties' && <SpecialtiesSection />}
+
+        {/* TAB 11: Open Doors Days */}
         {activeTab === 'dod' && <OpenDaysSection />}
 
-        {/* TAB 7: Q&A Community */}
+        {/* TAB 12: Q&A Community */}
         {activeTab === 'qna' && <QnaSection />}
 
-        {/* TAB 8: Articles & Guides */}
+        {/* TAB 13: Articles & Guides */}
         {activeTab === 'articles' && <ArticlesSection />}
+
+        {/* TAB 14: University Partner Portal */}
+        {activeTab === 'vuzam' && <UniversityPartnerPortal />}
+
+        {/* TAB 15: Premium Wave Tracker */}
+        {activeTab === 'premium' && <PremiumAnalytics />}
 
       </main>
 

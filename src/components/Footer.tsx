@@ -21,7 +21,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               </span>
             </div>
             <p className="text-xs leading-relaxed text-slate-400">
-              Независимый информационно-аналитический проект о высшем образовании в России. Честные отзывы студентов («сливы»), проходные баллы и рейтинги.
+              Независимый информационно-аналитический проект о высшем образовании в России. Честные отзывы студентов («сливы»), проходные баллы, умный подбор и рейтинги.
             </p>
             <span className="text-[11px] text-slate-500 block">
               © 2014–2026 Проект «Табитуриент». Все права защищены.
@@ -40,8 +40,8 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('specialties')} className="hover:text-white transition-colors">
-                  Специальности и направления
+                <button onClick={() => setActiveTab('podbor')} className="hover:text-white transition-colors">
+                  Умный подбор вуза
                 </button>
               </li>
               <li>
@@ -50,13 +50,23 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 </button>
               </li>
               <li>
+                <button onClick={() => setActiveTab('calculator_pay')} className="hover:text-white transition-colors">
+                  Платное обучение и госкредит 3%
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveTab('100program')} className="hover:text-white transition-colors">
+                  Топ-100 программ России
+                </button>
+              </li>
+              <li>
                 <button onClick={() => setActiveTab('reviews')} className="hover:text-white transition-colors">
                   Сливы отзывов студентов
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('rankings')} className="hover:text-white transition-colors">
-                  Сводные рейтинги вузов 2026
+                <button onClick={() => setActiveTab('dorms')} className="hover:text-white transition-colors">
+                  Инспектор общежитий
                 </button>
               </li>
             </ul>
@@ -65,9 +75,24 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           {/* Col 3: Events & Guides */}
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
-              Поступление 2026
+              Инструменты и сервисы
             </h4>
             <ul className="space-y-2">
+              <li>
+                <button onClick={() => setActiveTab('rankings')} className="hover:text-white transition-colors">
+                  Сводные рейтинги вузов 2026
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveTab('map')} className="hover:text-white transition-colors">
+                  Карта кампусов и метро
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveTab('specialties')} className="hover:text-white transition-colors">
+                  Специальности (ОКСО)
+                </button>
+              </li>
               <li>
                 <button onClick={() => setActiveTab('dod')} className="hover:text-white transition-colors">
                   Дни открытых дверей (ДОД)
@@ -80,30 +105,33 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               </li>
               <li>
                 <button onClick={() => setActiveTab('articles')} className="hover:text-white transition-colors">
-                  Статьи и советы экспертов
+                  Статьи и гайды
                 </button>
               </li>
               <li>
-                <span className="text-slate-500">
-                  Общежития и студенческие городки
-                </span>
+                <button onClick={() => setActiveTab('premium')} className="hover:text-white transition-colors">
+                  Премиум трекер согласий
+                </button>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Quality & Legal */}
+          {/* Col 4: Quality & University Reps */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
-              О платформе
+              Представителям вузов
             </h4>
-            <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 text-[11px] leading-relaxed">
-              <span className="text-emerald-400 font-bold block mb-1">
-                🛡️ Модерация и достоверность
+            <button
+              onClick={() => setActiveTab('vuzam')}
+              className="w-full p-3 bg-slate-900 hover:bg-slate-800 text-left rounded-xl border border-slate-800 text-[11px] leading-relaxed transition-colors block"
+            >
+              <span className="text-blue-400 font-bold block mb-1">
+                🏛️ Кабинет вуза
               </span>
-              Все отзывы проходят проверку модераторами на спам и заказные тексты. Мнения авторов могут не совпадать с позицией редакции.
-            </div>
-            <div className="text-[11px] text-slate-500">
-              Сделано с заботой о будущих студентах.
+              Управление профилем, официальные ответы на отзывы студентов и размещение ДОД.
+            </button>
+            <div className="text-[11px] text-slate-500 pt-2">
+              Все отзывы модерируются. Сделано с заботой об абитуриентах.
             </div>
           </div>
 

@@ -54,6 +54,8 @@ export interface University {
   studentSatisfaction: number;
   description: string;
   faculties: Faculty[];
+  metroStation?: string;
+  coordinates?: { lat: number; lng: number };
 }
 
 export interface Review {
@@ -76,6 +78,12 @@ export interface Review {
   };
   likes: number;
   commentsCount: number;
+  officialReply?: {
+    representativeName: string;
+    role: string;
+    date: string;
+    text: string;
+  };
 }
 
 export interface QnaQuestion {
@@ -127,4 +135,38 @@ export interface SpecialtyInfo {
   requiredSubjects: string[];
   avgSalary: number;
   universitiesCount: number;
+}
+
+export interface DormInfo {
+  id: string;
+  universityId: string;
+  universityName: string;
+  name: string;
+  address: string;
+  metro?: string;
+  walkMinutesToMetro: number;
+  travelMinutesToCampus: number;
+  priceMonthly: number;
+  ratingOverall: number;
+  pests: 'Отсутствуют' | 'Редко' | 'Бывают';
+  wardenStrictness: 'Лояльный' | 'Умеренный' | 'Строгий';
+  curfew: 'Круглосуточно (24/7)' | 'До 23:00' | 'До 01:00';
+  showerLocation: 'В блоке' | 'На этаже' | 'В подвале';
+  wifiSpeed: string;
+  reviewSnippet: string;
+}
+
+export interface TopProgramItem {
+  id: string;
+  rank: number;
+  code: string;
+  name: string;
+  universityName: string;
+  universityLogo: string;
+  domain: string;
+  avgEgeScore: number;
+  competitionPerSeat: number;
+  startSalary: number;
+  tuitionPerYear: number;
+  budgetSlots: number;
 }

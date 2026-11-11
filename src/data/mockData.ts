@@ -1,4 +1,4 @@
-import { University, Review, QnaQuestion, OpenDayEvent, Article, SpecialtyInfo } from '../types';
+import { University, Review, QnaQuestion, OpenDayEvent, Article, SpecialtyInfo, DormInfo, TopProgramItem } from '../types';
 
 export const EGE_SUBJECTS = [
   { id: 'rus', name: 'Русский язык', defaultScore: 78, required: true },
@@ -44,6 +44,8 @@ export const UNIVERSITIES: University[] = [
     logo: '🎓',
     region: 'Москва',
     address: 'г. Москва, Покровский бульвар, д. 11',
+    metroStation: 'Китай-город / Чкаловская',
+    coordinates: { lat: 55.754, lng: 37.648 },
     isState: true,
     isHead: true,
     hasMilitary: true,
@@ -115,7 +117,7 @@ export const UNIVERSITIES: University[] = [
             id: 'hse-icef',
             code: '38.03.01',
             name: 'Экономика и финансы',
-            facultyName: 'Международный институт экономики и финансов (МИЭФ)',
+            facultyName: 'МИЭФ',
             degree: 'Бакалавриат',
             budgetSlots: 25,
             paidSlots: 180,
@@ -140,6 +142,8 @@ export const UNIVERSITIES: University[] = [
     logo: '⚡',
     region: 'Москва',
     address: 'г. Москва, Красноказарменная ул., д. 14',
+    metroStation: 'Авиамоторная / Лефортово',
+    coordinates: { lat: 55.753, lng: 37.708 },
     isState: true,
     isHead: true,
     hasMilitary: true,
@@ -236,6 +240,8 @@ export const UNIVERSITIES: University[] = [
     logo: '🛠️',
     region: 'Москва',
     address: 'г. Москва, 2-я Бауманская ул., д. 5, стр. 1',
+    metroStation: 'Бауманская / Электрозаводская',
+    coordinates: { lat: 55.766, lng: 37.684 },
     isState: true,
     isHead: true,
     hasMilitary: true,
@@ -308,6 +314,8 @@ export const UNIVERSITIES: University[] = [
     logo: '🚀',
     region: 'Санкт-Петербург',
     address: 'г. Санкт-Петербург, Кронверкский пр., д. 49',
+    metroStation: 'Горьковская',
+    coordinates: { lat: 59.957, lng: 30.309 },
     isState: true,
     isHead: true,
     hasMilitary: true,
@@ -362,6 +370,8 @@ export const UNIVERSITIES: University[] = [
     logo: '🏛️',
     region: 'Санкт-Петербург',
     address: 'г. Санкт-Петербург, Университетская наб., д. 7-9',
+    metroStation: 'Василеостровская / Спортивная',
+    coordinates: { lat: 59.941, lng: 30.304 },
     isState: true,
     isHead: true,
     hasMilitary: true,
@@ -416,6 +426,8 @@ export const UNIVERSITIES: University[] = [
     logo: '🏰',
     region: 'Республика Татарстан',
     address: 'г. Казань, ул. Кремлевская, д. 18',
+    metroStation: 'Кремлёвская / Площадь Тукая',
+    coordinates: { lat: 55.792, lng: 49.122 },
     isState: true,
     isHead: true,
     hasMilitary: true,
@@ -470,6 +482,8 @@ export const UNIVERSITIES: University[] = [
     logo: '🌲',
     region: 'Новосибирская область',
     address: 'г. Новосибирск, ул. Пирогова, д. 1',
+    metroStation: 'Академгородок',
+    coordinates: { lat: 54.843, lng: 83.093 },
     isState: true,
     isHead: true,
     hasMilitary: true,
@@ -539,7 +553,13 @@ export const REVIEWS: Review[] = [
       career: 5
     },
     likes: 142,
-    commentsCount: 28
+    commentsCount: 28,
+    officialReply: {
+      representativeName: 'Деканат ФКН НИУ ВШЭ',
+      role: 'Официальный представитель вуза',
+      date: '19 октября 2026',
+      text: 'Благодарим за подробный и объективный отзыв! Мы постоянно развиваем партнерские программы с индустрией, чтобы наши студенты получали самые востребованные навыки с первых курсов.'
+    }
   },
   {
     id: 'rev-2',
@@ -560,7 +580,13 @@ export const REVIEWS: Review[] = [
       career: 4
     },
     likes: 98,
-    commentsCount: 15
+    commentsCount: 15,
+    officialReply: {
+      representativeName: 'Управление общественных связей НИУ МЭИ',
+      role: 'Официальный представитель вуза',
+      date: '14 сентября 2026',
+      text: 'Спасибо за теплые слова об альма-матер! Кампус в Лефортово продолжает модернизироваться, открываются новые лаборатории цифровой энергетики.'
+    }
   },
   {
     id: 'rev-3',
@@ -624,6 +650,214 @@ export const REVIEWS: Review[] = [
     },
     likes: 74,
     commentsCount: 11
+  }
+];
+
+export const DORMS_DATA: DormInfo[] = [
+  {
+    id: 'dorm-kfu-du',
+    universityId: 'kfu',
+    universityName: 'КФУ (Казань)',
+    name: 'Деревня Универсиады (Кампус КФУ)',
+    address: 'г. Казань, ул. Деревня Универсиады, д. 1-32',
+    metro: 'Проспект Победы',
+    walkMinutesToMetro: 10,
+    travelMinutesToCampus: 25,
+    priceMonthly: 800,
+    ratingOverall: 4.8,
+    pests: 'Отсутствуют',
+    wardenStrictness: 'Умеренный',
+    curfew: 'Круглосуточно (24/7)',
+    showerLocation: 'В блоке',
+    wifiSpeed: '100 Мбит/с (оптика)',
+    reviewSnippet: 'Лучший студенческий городок в России. Охраняемая территория, футбольные поля, бассейн, магазины. В комнатах евроремонт.'
+  },
+  {
+    id: 'dorm-hse-dubki',
+    universityId: 'hse',
+    universityName: 'НИУ ВШЭ (Москва)',
+    name: 'Студенческий городок «Дубки»',
+    address: 'Московская обл., Одинцовский р-н, пос. ВНИИССОК',
+    metro: 'Одинцово (МЦД-1)',
+    walkMinutesToMetro: 15,
+    travelMinutesToCampus: 55,
+    priceMonthly: 1800,
+    ratingOverall: 4.6,
+    pests: 'Отсутствуют',
+    wardenStrictness: 'Лояльный',
+    curfew: 'Круглосуточно (24/7)',
+    showerLocation: 'В блоке',
+    wifiSpeed: '70 Мбит/с (eduroam)',
+    reviewSnippet: 'Квартирный тип, в каждой квартире отдельная кухня и санузел. Далековато от центра, но курсируют бесплатные автобусы до станции.'
+  },
+  {
+    id: 'dorm-mpei-lefortovo',
+    universityId: 'mpei',
+    universityName: 'НИУ МЭИ (Москва)',
+    name: 'Кампус Лефортово (Корпуса 1-6)',
+    address: 'г. Москва, ул. Энергетическая, д. 6-18',
+    metro: 'Авиамоторная / Лефортово',
+    walkMinutesToMetro: 5,
+    travelMinutesToCampus: 5,
+    priceMonthly: 1200,
+    ratingOverall: 4.1,
+    pests: 'Редко',
+    wardenStrictness: 'Умеренный',
+    curfew: 'Круглосуточно (24/7)',
+    showerLocation: 'На этаже',
+    wifiSpeed: '50 Мбит/с',
+    reviewSnippet: 'Главный козырь — до учебных корпусов 3 минуты пешком! Рядом парк, бассейн МЭИ, стадион Энергия.'
+  },
+  {
+    id: 'dorm-bmstu-izmaylovo',
+    universityId: 'bmstu',
+    universityName: 'МГТУ им. Баумана (Москва)',
+    name: 'Студгородок в Измайлово и на Яузе',
+    address: 'г. Москва, Измайловский пр., д. 73 / Госпитальный пер., д. 4',
+    metro: 'Первомайская / Бауманская',
+    walkMinutesToMetro: 7,
+    travelMinutesToCampus: 20,
+    priceMonthly: 1400,
+    ratingOverall: 3.9,
+    pests: 'Редко',
+    wardenStrictness: 'Строгий',
+    curfew: 'До 01:00',
+    showerLocation: 'В блоке',
+    wifiSpeed: '100 Мбит/с',
+    reviewSnippet: 'Новые корпуса на Госпитальном переулке — премиум уровень! В Измайлово коридорно-блочный тип, крепкий ремонт.'
+  },
+  {
+    id: 'dorm-spbu-punk',
+    universityId: 'spbu',
+    universityName: 'СПбГУ (Санкт-Петербург)',
+    name: 'ПУНК (Петергофский городок)',
+    address: 'г. Санкт-Петербург, г. Петергоф, Ботаническая ул.',
+    metro: 'Автово / Ленинский пр. (на электричке)',
+    walkMinutesToMetro: 20,
+    travelMinutesToCampus: 90,
+    priceMonthly: 1300,
+    ratingOverall: 3.5,
+    pests: 'Бывают',
+    wardenStrictness: 'Умеренный',
+    curfew: 'Круглосуточно (24/7)',
+    showerLocation: 'В блоке',
+    wifiSpeed: '30 Мбит/с',
+    reviewSnippet: 'Своя особая атмосфера студенческого братства, но дорога до Васильевского острова занимает полтора часа.'
+  }
+];
+
+export const TOP_100_PROGRAMS: TopProgramItem[] = [
+  {
+    id: 'prog-1',
+    rank: 1,
+    code: '01.03.02',
+    name: 'Прикладная математика и информатика',
+    universityName: 'НИУ ВШЭ (ФКН)',
+    universityLogo: '🎓',
+    domain: 'Математика и IT',
+    avgEgeScore: 308,
+    competitionPerSeat: 24.5,
+    startSalary: 220000,
+    tuitionPerYear: 730000,
+    budgetSlots: 110
+  },
+  {
+    id: 'prog-2',
+    rank: 2,
+    code: '01.03.02',
+    name: 'Прикладная математика и информатика',
+    universityName: 'Университет ИТМО (ФИТиП)',
+    universityLogo: '🚀',
+    domain: 'Математика и IT',
+    avgEgeScore: 302,
+    competitionPerSeat: 19.8,
+    startSalary: 210000,
+    tuitionPerYear: 440000,
+    budgetSlots: 100
+  },
+  {
+    id: 'prog-3',
+    rank: 3,
+    code: '09.03.04',
+    name: 'Программная инженерия (ИУ7)',
+    universityName: 'МГТУ им. Н.Э. Баумана',
+    universityLogo: '🛠️',
+    domain: 'Математика и IT',
+    avgEgeScore: 294,
+    competitionPerSeat: 18.2,
+    startSalary: 195000,
+    tuitionPerYear: 395000,
+    budgetSlots: 95
+  },
+  {
+    id: 'prog-4',
+    rank: 4,
+    code: '38.03.01',
+    name: 'Экономика и финансы (МИЭФ)',
+    universityName: 'НИУ ВШЭ',
+    universityLogo: '🎓',
+    domain: 'Экономика и управление',
+    avgEgeScore: 302,
+    competitionPerSeat: 15.4,
+    startSalary: 190000,
+    tuitionPerYear: 880000,
+    budgetSlots: 25
+  },
+  {
+    id: 'prog-5',
+    rank: 5,
+    code: '40.03.01',
+    name: 'Юриспруденция',
+    universityName: 'СПбГУ',
+    universityLogo: '🏛️',
+    domain: 'Гуманитарные и социальные науки',
+    avgEgeScore: 297,
+    competitionPerSeat: 22.0,
+    startSalary: 140000,
+    tuitionPerYear: 420000,
+    budgetSlots: 65
+  },
+  {
+    id: 'prog-6',
+    rank: 6,
+    code: '09.03.01',
+    name: 'Информатика и вычислительная техника (АВТИ)',
+    universityName: 'НИУ МЭИ',
+    universityLogo: '⚡',
+    domain: 'Инженерия и технологии',
+    avgEgeScore: 252,
+    competitionPerSeat: 12.3,
+    startSalary: 150000,
+    tuitionPerYear: 285000,
+    budgetSlots: 140
+  },
+  {
+    id: 'prog-7',
+    rank: 7,
+    code: '09.03.04',
+    name: 'Программная инженерия (ИТИС)',
+    universityName: 'КФУ',
+    universityLogo: '🏰',
+    domain: 'Математика и IT',
+    avgEgeScore: 268,
+    competitionPerSeat: 14.1,
+    startSalary: 160000,
+    tuitionPerYear: 240000,
+    budgetSlots: 120
+  },
+  {
+    id: 'prog-8',
+    rank: 8,
+    code: '09.03.01',
+    name: 'Информатика и вычислительная техника (ФИТ)',
+    universityName: 'НГУ (Новосибирск)',
+    universityLogo: '🌲',
+    domain: 'Математика и IT',
+    avgEgeScore: 275,
+    competitionPerSeat: 13.8,
+    startSalary: 175000,
+    tuitionPerYear: 235000,
+    budgetSlots: 90
   }
 ];
 
