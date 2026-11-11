@@ -16,6 +16,7 @@ import {
 export const AdmissionsCalendar: React.FC = () => {
   const [selectedStage, setSelectedStage] = useState<string>('Все');
   const [selectedAudience, setSelectedAudience] = useState<string>('Все');
+  const [filterOnlyIncomplete, setFilterOnlyIncomplete] = useState<boolean>(false);
   const [completedIds, setCompletedIds] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('tabi_completed_deadlines');
@@ -84,9 +85,10 @@ export const AdmissionsCalendar: React.FC = () => {
     return ADMISSIONS_DEADLINES.filter((item) => {
       const matchStage = selectedStage === 'Все' || item.stage === selectedStage;
       const matchAudience = selectedAudience === 'Все' || item.targetAudience === selectedAudience;
-      return matchStage && matchAudience;
+      const matchIncomplete = !filterOnlyIncomplete || !completedIds.includes(item.id);
+      return matchStage && matchAudience && matchIncomplete;
     });
-  }, [selectedStage, selectedAudience]);
+  }, [selectedStage, selectedAudience, filterOnlyIncomplete, completedIds]);
 
   // Export event to ICS file
   const downloadIcs = (event: AdmissionsDeadline) => {
@@ -94,6 +96,7 @@ export const AdmissionsCalendar: React.FC = () => {
 VERSION:2.0
 PRODID:-//Tabiturient.ru//Admissions Calendar 2026//RU
 BEGIN:VEVENT
+UID:${event.id}-2026@tabiturient.ru
 SUMMARY:${event.title}
 DESCRIPTION:${event.description}\\nДокумент: ${event.officialDocument}
 STATUS:CONFIRMED
@@ -107,6 +110,38 @@ END:VCALENDAR`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Export all 10 deadlines to a combined .ics calendar file
+  const downloadAllIcs = () => {
+    const eventsBlocks = ADMISSIONS_DEADLINES.map((event) => {
+      return `BEGIN:VEVENT
+UID:${event.id}-2026@tabiturient.ru
+SUMMARY:${event.title}
+DESCRIPTION:${event.description}\\nОфициальный документ: ${event.officialDocument}\\nЭтап: ${event.stage}
+STATUS:CONFIRMED
+END:VEVENT`;
+    }).join('\n');
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tabiturient.ru//Admissions Calendar 2026 All Milestones//RU
+CALSCALE:GREGORIAN
+X-WR-CALNAME:Календарь абитуриента 2026 Tabiturient
+${eventsBlocks}
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'tabiturient-kalendar-priema-2026.ics');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setNotificationToast('Файл календаря (все 10 дедлайнов) успешно скачан!');
+    setTimeout(() => setNotificationToast(null), 3500);
   };
 
   const handleRemindMe = (event: AdmissionsDeadline) => {
@@ -183,8 +218,36 @@ END:VCALENDAR`;
         </div>
       </div>
 
-      {/* Filter Bar */}
+      {/* Filter and Actions Bar */}
       <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+        
+        {/* Top bar with Export All and Toggle */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-bold text-slate-700">
+              Показано событий: <strong className="text-blue-700">{filteredDeadlines.length}</strong> из {ADMISSIONS_DEADLINES.length}
+            </span>
+            <label className="flex items-center gap-2 cursor-pointer select-none text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors">
+              <input
+                type="checkbox"
+                checked={filterOnlyIncomplete}
+                onChange={(e) => setFilterOnlyIncomplete(e.target.checked)}
+                className="w-3.5 h-3.5 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+              />
+              <span>Только невыполненные</span>
+            </label>
+          </div>
+
+          <button
+            onClick={downloadAllIcs}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all hover:shadow hover:scale-[1.01]"
+            title="Скачать все ключевые даты приема 2026 в Apple/Google/Outlook календарь"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Экспорт всех дедлайнов (.ics)
+          </button>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           
           {/* Stage Filter */}
