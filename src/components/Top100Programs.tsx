@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Award, Search } from 'lucide-react';
+import { Award, Search, Plus, BookmarkCheck } from 'lucide-react';
 import { TOP_100_PROGRAMS } from '../data/mockData';
+import { usePlanStore } from '../services/planStore';
 
 export const Top100Programs: React.FC = () => {
   const [selectedDomain, setSelectedDomain] = useState<string>('Все направления');
   const [sortBy, setSortBy] = useState<'rank' | 'salary' | 'ege' | 'competition'>('rank');
   const [search, setSearch] = useState<string>('');
+  const { addProgram, hasProgram } = usePlanStore();
 
   const domains = ['Все направления', 'Математика и IT', 'Инженерия и технологии', 'Экономика и управление', 'Гуманитарные и социальные науки'];
 
@@ -98,10 +100,13 @@ export const Top100Programs: React.FC = () => {
                 <th className="py-4 px-4 text-center">Проходной балл</th>
                 <th className="py-4 px-4 text-center">Зарплата выпускника</th>
                 <th className="py-4 px-4 text-right">Стоимость / год</th>
+                <th className="py-4 px-4 text-center">В план</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs font-medium">
-              {filteredPrograms.map((p, idx) => (
+              {filteredPrograms.map((p, idx) => {
+                const inPlan = hasProgram(p.id);
+                return (
                 <tr key={p.id} className="hover:bg-blue-50/40 transition-colors">
                   <td className="py-4 px-4 text-center">
                     {idx === 0 && <span className="text-lg">🥇</span>}
@@ -152,8 +157,39 @@ export const Top100Programs: React.FC = () => {
                       {p.tuitionPerYear.toLocaleString('ru-RU')} ₽
                     </span>
                   </td>
+
+                  <td className="py-4 px-4 text-center">
+                    <button
+                      onClick={() => {
+                        addProgram({
+                          programId: p.id,
+                          programCode: p.code,
+                          programName: p.name,
+                          universityId: p.id.split('-')[1] || 'uni',
+                          universityName: p.universityName,
+                          campusId: 'main-campus',
+                          campusName: 'Главный кампус',
+                          durationYears: 4,
+                          degree: 'Бакалавриат',
+                          pathway: 'ugc_state',
+                          tuitionPerYear: p.tuitionPerYear,
+                          passingScoreBudget: p.avgEgeScore,
+                          budgetSlots: p.budgetSlots,
+                          knownRequirements: [`Конкурс: ${p.competitionPerSeat} чел/место`, `Ср. балл: ${p.avgEgeScore}`]
+                        }, 'considering');
+                      }}
+                      className={`p-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1 ${
+                        inPlan
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200'
+                      }`}
+                      title={inPlan ? 'Программа уже в вашем плане' : 'Добавить в Мой план'}
+                    >
+                      {inPlan ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                    </button>
+                  </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>

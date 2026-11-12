@@ -4,8 +4,10 @@ import {
   MapPin, 
   Sparkles, 
   ShieldCheck, 
-  Compass
+  Compass,
+  Info
 } from 'lucide-react';
+import { evaluateDormChances } from '../calculations/dormChances';
 
 interface DormChanceCalculatorProps {
   initialUniId?: string;
@@ -24,81 +26,15 @@ export const DormChanceCalculator: React.FC<DormChanceCalculatorProps> = ({
     return UNIVERSITIES.find((u) => u.id === selectedUniId) || UNIVERSITIES[0];
   }, [selectedUniId]);
 
-  // Probability Calculation
+  // Probability Calculation using pure domain logic
   const result = useMemo(() => {
-    if (!selectedUni.hasDorm) {
-      return {
-        percent: 0,
-        status: 'Общежитие отсутствует',
-        color: 'rose',
-        recommendation: 'У данного вуза нет собственного жилого фонда. Студенты арендуют квартиры или коворкинг-коливинги.',
-        dormType: 'Аренда жилья'
-      };
-    }
-
-    if (distanceKm === 'close') {
-      return {
-        percent: 5,
-        status: 'Отказ по удаленности',
-        color: 'rose',
-        recommendation: 'По закону «Об образовании РФ» студенты с пропиской ближе определенного радиуса (обычно 50-80 км от МКАД/КАД) место в общежитии не получают.',
-        dormType: 'Проживание дома'
-      };
-    }
-
-    let chance = 70;
-
-    // Social benefits guarantee
-    if (socialBenefit === 'orphan' || socialBenefit === 'bvi') {
-      chance = 99;
-    } else if (socialBenefit === 'target') {
-      chance += 15;
-    }
-
-    // Budget vs Paid
-    if (educationType === 'budget') {
-      chance += 15;
-    } else {
-      chance -= 30; // Paid students get dorms on leftover basis
-    }
-
-    // High EGE Bonus
-    if (egeScore >= 280) {
-      chance += 10;
-    }
-
-    chance = Math.min(Math.max(chance, 10), 99);
-
-    let status = 'Средние шансы';
-    let color = 'amber';
-    let dormType = 'Блочный / Коридорный тип';
-
-    if (chance >= 85) {
-      status = 'Гарантированное заселение';
-      color = 'emerald';
-      dormType = selectedUni.id === 'hse' ? 'Квартирный кампус (Дубки)' : 'Блочный кампус';
-    } else if (chance < 40) {
-      status = 'Маловероятно (по остаточному принципу)';
-      color = 'rose';
-      dormType = 'Резервный фонд / партнерские гостиницы';
-    }
-
-    let recommendation = '';
-    if (educationType === 'paid') {
-      recommendation = 'Студенты платной формы заселяются только после 1 сентября при наличии свободных мест. Рекомендуем заранее подыскать варианты совместной аренды квартиры.';
-    } else if (socialBenefit === 'bvi' || socialBenefit === 'orphan') {
-      recommendation = 'Вам положено первоочередное заселение в день приезда. Общежитие гарантировано на весь срок обучения.';
-    } else {
-      recommendation = 'Подавайте заявление на общежитие в день публикации приказа о зачислении. Приоритет отдается иногородним с более высокими баллами ЕГЭ.';
-    }
-
-    return {
-      percent: chance,
-      status,
-      color,
-      recommendation,
-      dormType
-    };
+    return evaluateDormChances({
+      hasDorm: selectedUni.hasDorm,
+      distanceKm,
+      educationType,
+      socialBenefit,
+      egeScore
+    });
   }, [selectedUni, distanceKm, educationType, egeScore, socialBenefit]);
 
   return (
@@ -355,6 +291,12 @@ export const DormChanceCalculator: React.FC<DormChanceCalculatorProps> = ({
             <p className="leading-relaxed">
               {result.recommendation}
             </p>
+          </div>
+
+          {/* Provenance and Legal Disclaimer */}
+          <div className="p-3 rounded-2xl bg-slate-900/50 border border-slate-700/60 text-[11px] text-slate-400 flex items-start gap-2">
+            <Info className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+            <span>{result.provenanceDisclaimer}</span>
           </div>
 
         </div>

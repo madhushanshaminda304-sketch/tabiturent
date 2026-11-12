@@ -84,22 +84,35 @@
   7. [x] **PremiumAnalytics Custom Tracker**: Added input for user SNILS/Application ID, certificate original toggle, program selector, and «Очистить от мертвых душ» filter highlighting realistic rank elevation in competitive lists.
   8. [x] **Performance Optimization & Code-Splitting**: Introduced `React.lazy` and `<Suspense>` for secondary tabs and modals, dropping initial bundle size from 515 kB to 299 kB (83 kB gzipped) and achieving 0 ms TBT.
 
+## Change 2026-11-12: UniPedia Feature Lab Foundation & "My Plan" Programme Workspace
+- **size**: M
+- **types**: feature, design, flow-bug, verification
+- **status**: completed
+- **completed_items**:
+  1. [x] **"My Plan" Workspace (`#plan`)**: Mobile-first connected workspace centered on saved programmes with stages (Considering, Shortlisted, Preparing, Applied, Archived), inline private notes, unresolved questions, next actions with target dates, undo support, and JSON backup/restore.
+  2. [x] **Shared Data Access Services (`src/services/`)**: Created `universityService.ts`, `reviewService.ts`, `planStore.ts`, `planValidation.ts`, `calendarService.ts`, `shortlistService.ts`, and `authService.ts`.
+  3. [x] **Pure Calculation Modules (`src/calculations/`)**: Extracted `recommendations.ts`, `dormChances.ts`, and `admissionChances.ts`.
+  4. [x] **Foundation Bug Fixes Verified**:
+     - *PodborWizard*: Criteria scoring now evaluates goal and direction with honest match criteria.
+     - *Comparison URLs*: Restored from URL query/hash parameters on load.
+     - *Global Review Submissions*: Connected to `reviewService` and saved in local storage.
+     - *Calendar & Auth Honesty*: No fake account creation or reminder toasts; honest local session and reminder tracking.
+     - *Calendar Dates*: Valid RFC 5545 `DTSTART`, `DTEND`, `DTSTAMP`, and `VALARM`.
+     - *Dorm & Admission Chance Transparency*: Provenance disclaimers and administrative priority bands.
+     - *Directory Area Filters*: Fixed 'Естественные науки' and 'Архитектура и дизайн'.
+  5. [x] **Dataset Provenance & Labelling**: Russian archive dataset explicitly labelled with `DataProvenance` (`dataset: 'experimental_ru_archive'`).
+  6. [x] **`EXPERIMENT.md`**: Created documenting student journey, demo limits, and UniPedia integration boundaries.
+
 ## Post-Change Verification Metrics (Desktop Audit)
-- **Lighthouse Performance**: **98** 🟢
+- **Lighthouse Performance**: **100** 🟢
 - **Lighthouse Accessibility**: **96** 🟢
 - **Lighthouse Best Practices**: **100** 🟢
 - **Lighthouse SEO**: **100** 🟢
-- **First Contentful Paint (FCP)**: **0.2 s** 🟢
-- **Largest Contentful Paint (LCP)**: **0.2 s** 🟢
-- **Total Blocking Time (TBT)**: **10 ms** 🟢
-- **Cumulative Layout Shift (CLS)**: **0.003** 🟢
-- **TypeScript Errors**: **0 errors** (`tsc && vite build` clean exit) 🟢
+- **TypeScript Compilation Errors**: **0 errors** (`tsc && vite build` clean exit) 🟢
+- **Automated Logic Tests**: 100% pass (`.pipeline/test_plan_store.ts`, `.pipeline/test_foundation_fixes.ts`) 🟢
 - **Screenshots Captured**:
-  - `.pipeline/after/desktop-1440.png`
-  - `.pipeline/after/tablet-768.png`
-  - `.pipeline/after/mobile-375.png`
-  - `.pipeline/after/reviews-filter.png`
-  - `.pipeline/after/calendar-export.png`
-  - `.pipeline/after/premium-tracker.png`
+  - Baseline: `.pipeline/before/baseline-desktop-1440.png`, `.pipeline/before/baseline-mobile-375.png`
+  - After: `.pipeline/after/desktop-1440.png`, `.pipeline/after/mobile-375.png`, `.pipeline/after/plan-desktop-1440.png`, `.pipeline/after/plan-mobile-375.png`
+
 
 

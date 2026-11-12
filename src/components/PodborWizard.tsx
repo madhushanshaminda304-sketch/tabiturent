@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { UNIVERSITIES } from '../data/mockData';
 import { University } from '../types';
+import { calculateRecommendations } from '../calculations/recommendations';
 
 interface PodborWizardProps {
   onSelectUniversity: (u: University) => void;
@@ -29,31 +30,15 @@ export const PodborWizard: React.FC<PodborWizardProps> = ({ onSelectUniversity }
   const [scoreRange, setScoreRange] = useState<'low' | 'mid' | 'high' | 'olympiad'>('mid');
 
   // Completed recommendation calculation
-  const getRecommendations = () => {
-    return UNIVERSITIES.map(u => {
-      let score = 70;
-
-      // Region match
-      if (region !== 'Все регионы' && u.region === region) score += 15;
-
-      // Priority match
-      if (priority === 'dorm' && u.hasDorm && u.dormRating >= 4.0) score += 12;
-      if (priority === 'military' && u.hasMilitary) score += 10;
-      if (priority === 'career' && u.globalRank <= 4) score += 15;
-      if (priority === 'easy' && u.minPassingScore <= 230) score += 12;
-
-      // Score range match
-      if (scoreRange === 'olympiad' && u.avgPassingScore >= 290) score += 15;
-      if (scoreRange === 'high' && u.avgPassingScore >= 270 && u.avgPassingScore < 295) score += 15;
-      if (scoreRange === 'mid' && u.avgPassingScore >= 235 && u.avgPassingScore < 275) score += 15;
-      if (scoreRange === 'low' && u.minPassingScore <= 225) score += 15;
-
-      const clampedScore = Math.min(99, Math.max(65, score));
-      return { university: u, matchPercent: clampedScore };
-    }).sort((a, b) => b.matchPercent - a.matchPercent);
-  };
-
-  const recommendations = getRecommendations();
+  const recommendations = useMemo(() => {
+    return calculateRecommendations(UNIVERSITIES, {
+      goal,
+      region,
+      direction,
+      priority,
+      scoreRange
+    });
+  }, [goal, region, direction, priority, scoreRange]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -62,13 +47,13 @@ export const PodborWizard: React.FC<PodborWizardProps> = ({ onSelectUniversity }
       <div className="text-center max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200 mb-2">
           <Sparkles className="w-3.5 h-3.5" />
-          Умный алгоритм подбора вуза
+          Критериальный алгоритм подбора
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
           Подборка идеального университета за 5 шагов
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
-          Ответьте на несколько ключевых вопросов, и нейросетевой фильтр сопоставит ваши приоритеты с базой данных 2026 года.
+          Ответьте на несколько ключевых вопросов: система сопоставит вашу цель (бюджет/платка), направление обучения, регион и приоритеты.
         </p>
       </div>
 
@@ -333,9 +318,24 @@ export const PodborWizard: React.FC<PodborWizardProps> = ({ onSelectUniversity }
                       </div>
                       <div className="flex justify-between">
                         <span>Общежитие:</span>
-                        <strong>{item.university.hasDorm ? 'Гарантировано' : 'Нет'}</strong>
+                        <strong>{item.university.hasDorm ? 'Есть' : 'Нет'}</strong>
                       </div>
                     </div>
+
+                    {item.matchedCriteria && item.matchedCriteria.length > 0 && (
+                      <div className="mt-3 pt-2 border-t border-slate-200/60 space-y-1">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                          Совпало по критериям:
+                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {item.matchedCriteria.slice(0, 2).map((crit, cIdx) => (
+                            <span key={cIdx} className="text-[10px] px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-medium">
+                              ✓ {crit}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <button

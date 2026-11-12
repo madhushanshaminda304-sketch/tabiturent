@@ -25,7 +25,8 @@ import {
   Search,
   ChevronDown,
   Megaphone,
-  MessageSquare
+  MessageSquare,
+  Compass
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -33,8 +34,10 @@ interface HeaderProps {
   setActiveTab: (tab: string) => void;
   compareCount: number;
   bookmarksCount: number;
+  planCount?: number;
   openCompare: () => void;
   openBookmarks: () => void;
+  openPlan?: () => void;
   openAuth: () => void;
   openSubmitReview?: () => void;
   openGlobalSearch?: () => void;
@@ -47,8 +50,10 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   compareCount,
   bookmarksCount,
+  planCount = 0,
   openCompare,
   openBookmarks,
+  openPlan,
   openAuth,
   openSubmitReview,
   openGlobalSearch,
@@ -79,6 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const primaryTabs = [
     { id: 'vuz', label: 'Поиск вуза', icon: Building2 },
+    { id: 'plan', label: 'Мой план', icon: Compass },
     { id: 'calculator', label: 'Калькулятор ЕГЭ', icon: Calculator },
     { id: 'rankings', label: 'Рейтинги', icon: Trophy },
     { id: 'reviews', label: 'Отзывы («Сливы»)', icon: MessageSquareText },
@@ -118,12 +124,12 @@ export const Header: React.FC<HeaderProps> = ({
             <div>
               <span className="text-base sm:text-xl font-extrabold tracking-tight text-white flex items-center gap-1 sm:gap-1.5">
                 ТАБИТУРИЕНТ
-                <span className="hidden sm:inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  2026
+                <span className="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                  UniPedia Lab
                 </span>
               </span>
               <span className="hidden sm:block text-[11px] text-slate-400 font-medium tracking-wide">
-                Честный гид по вузам и поступлению
+                Лаборатория планирования поступления (Архив РФ)
               </span>
             </div>
           </div>
@@ -169,6 +175,25 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Прислать слив</span>
               </button>
             )}
+
+            {/* Plan Button */}
+            <button
+              onClick={() => openPlan ? openPlan() : handleNavClick('plan')}
+              className={`relative px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 border ${
+                activeTab === 'plan' || planCount > 0
+                  ? 'bg-blue-600 text-white border-blue-500'
+                  : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+              }`}
+              title="Мой персональный план поступления"
+            >
+              <Compass className="w-4 h-4" />
+              <span className="hidden md:inline">Мой план</span>
+              {planCount > 0 && (
+                <span className="bg-white text-blue-700 text-xs font-bold px-1.5 py-0.2 rounded-full">
+                  {planCount}
+                </span>
+              )}
+            </button>
 
             {/* Compare Button */}
             <button

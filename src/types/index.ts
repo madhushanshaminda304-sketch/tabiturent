@@ -1,5 +1,17 @@
 export type SentimentType = 'positive' | 'neutral' | 'negative';
 
+export type VerificationStatus = 'verified' | 'unverified' | 'historical' | 'sample_data';
+
+export interface DataProvenance {
+  sourceUrl?: string;
+  sourceName: string;
+  applicableYearOrIntake: string;
+  lastVerifiedDate?: string;
+  verificationStatus: VerificationStatus;
+  dataset: 'experimental_ru_archive';
+  notes?: string;
+}
+
 export interface SubjectRequirement {
   subject: string;
   minScore: number;
@@ -18,6 +30,9 @@ export interface Program {
   tuitionPerYear: number;
   subjects: SubjectRequirement[];
   durationYears: number;
+  campusId?: string;
+  intakeId?: string;
+  provenance?: DataProvenance;
 }
 
 export interface Faculty {
@@ -33,6 +48,8 @@ export interface University {
   logo: string;
   region: string;
   address: string;
+  campusId?: string;
+  campusName?: string;
   isState: boolean;
   isHead: boolean;
   hasMilitary: boolean;
@@ -56,6 +73,7 @@ export interface University {
   faculties: Faculty[];
   metroStation?: string;
   coordinates?: { lat: number; lng: number };
+  provenance?: DataProvenance;
 }
 
 export interface ReviewComment {
@@ -208,4 +226,7 @@ export interface AdmissionsDeadline {
   officialDocument: string;
   tips: string;
 }
+
+export * from './plan';
+
 

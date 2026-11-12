@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   MessageSquareText, 
   ThumbsUp, 
@@ -18,11 +18,17 @@ import {
   X
 } from 'lucide-react';
 import { Review, SentimentType, ReviewComment } from '../types';
-import { REVIEWS, UNIVERSITIES } from '../data/mockData';
+import { UNIVERSITIES } from '../data/mockData';
 import { SubmitReviewModal } from './SubmitReviewModal';
+import { reviewService } from '../services/reviewService';
 
 export const ReviewsSection: React.FC = () => {
-  const [reviewsList, setReviewsList] = useState<Review[]>(REVIEWS);
+  const [reviewsList, setReviewsList] = useState<Review[]>(() => reviewService.getAll());
+
+  useEffect(() => {
+    return reviewService.subscribe(setReviewsList);
+  }, []);
+
   const [selectedSentiment, setSelectedSentiment] = useState<SentimentType | 'all'>('all');
   const [selectedUni, setSelectedUni] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -74,9 +80,7 @@ export const ReviewsSection: React.FC = () => {
   };
 
   const handleLike = (id: string) => {
-    setReviewsList((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, likes: r.likes + 1 } : r))
-    );
+    reviewService.likeReview(id);
   };
 
   const handleAddComment = (reviewId: string) => {
@@ -93,25 +97,12 @@ export const ReviewsSection: React.FC = () => {
       likes: 1
     };
 
-    setReviewsList((prev) =>
-      prev.map((r) => {
-        if (r.id === reviewId) {
-          const updatedComments = r.comments ? [...r.comments, newComment] : [newComment];
-          return {
-            ...r,
-            commentsCount: r.commentsCount + 1,
-            comments: updatedComments
-          };
-        }
-        return r;
-      })
-    );
-
+    reviewService.addComment(reviewId, newComment);
     setCommentText((prev) => ({ ...prev, [reviewId]: '' }));
   };
 
   const handleCreatedReview = (newRev: Review) => {
-    setReviewsList([newRev, ...reviewsList]);
+    reviewService.addReview(newRev);
   };
 
   return (

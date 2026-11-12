@@ -4,11 +4,15 @@ import { HeroSearch } from './components/HeroSearch';
 import { UniversityCard } from './components/UniversityCard';
 import { UniversityDetailModal } from './components/UniversityDetailModal';
 import { Footer } from './components/Footer';
-import { UNIVERSITIES } from './data/mockData';
 import { University } from './types';
 import { Building2 } from 'lucide-react';
+import { universityService } from './services/universityService';
+import { reviewService } from './services/reviewService';
+import { ShortlistService } from './services/shortlistService';
+import { usePlanStore } from './services/planStore';
 
 // Lazy-load secondary tabs and non-critical modals for optimum performance & fast TBT
+const MyPlanWorkspace = lazy(() => import('./components/MyPlanWorkspace').then(m => ({ default: m.MyPlanWorkspace })));
 const EgeCalculator = lazy(() => import('./components/EgeCalculator').then(m => ({ default: m.EgeCalculator })));
 const PaidCalculator = lazy(() => import('./components/PaidCalculator').then(m => ({ default: m.PaidCalculator })));
 const PodborWizard = lazy(() => import('./components/PodborWizard').then(m => ({ default: m.PodborWizard })));
@@ -34,7 +38,7 @@ const AuthModal = lazy(() => import('./components/AuthModal').then(m => ({ defau
 const GlobalSearchModal = lazy(() => import('./components/GlobalSearchModal').then(m => ({ default: m.GlobalSearchModal })));
 
 const VALID_TABS = [
-  'vuz', 'podbor', 'calculator', 'calculator_pay', '100program',
+  'vuz', 'plan', 'podbor', 'calculator', 'calculator_pay', '100program',
   'topspec', 'calendar', 'reviews', 'dorms', 'rankings',
   'map', 'specialties', 'dod', 'qna', 'articles', 'vuzam', 'premium'
 ];
@@ -98,35 +102,33 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Bookmarks & Compare persistent state
+  // Plan Store hook
+  const { items: planItems } = usePlanStore();
+
+  // Bookmarks & Compare persistent state (clean empty start for new users)
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('tabi_bookmarks');
-      return saved ? JSON.parse(saved) : ['hse', 'mpei'];
-    } catch {
-      return ['hse', 'mpei'];
-    }
+    return ShortlistService.getInitialBookmarks();
   });
 
   const [comparedIds, setComparedIds] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('tabi_compare');
-      return saved ? JSON.parse(saved) : ['hse', 'bmstu'];
-    } catch {
-      return ['hse', 'bmstu'];
-    }
+    return ShortlistService.getInitialCompare();
   });
 
+  // Restore comparison from URL on load
   useEffect(() => {
-    try {
-      localStorage.setItem('tabi_bookmarks', JSON.stringify(bookmarkedIds));
-    } catch {}
+    const fromUrl = ShortlistService.parseCompareFromUrl();
+    if (fromUrl.length > 0) {
+      setComparedIds(fromUrl);
+      setIsCompareOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    ShortlistService.saveBookmarks(bookmarkedIds);
   }, [bookmarkedIds]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('tabi_compare', JSON.stringify(comparedIds));
-    } catch {}
+    ShortlistService.saveCompare(comparedIds);
   }, [comparedIds]);
 
   // Toggle handlers
@@ -167,11 +169,7 @@ export const App: React.FC = () => {
   };
 
   const handleSelectUniByName = (name: string) => {
-    const found = UNIVERSITIES.find(
-      (u) =>
-        u.name.toLowerCase().includes(name.toLowerCase()) ||
-        name.toLowerCase().includes(u.name.toLowerCase())
-    );
+    const found = universityService.getByName(name);
     if (found) {
       setSelectedUniversity(found);
     } else {
@@ -180,66 +178,26 @@ export const App: React.FC = () => {
     }
   };
 
-  // Filtered universities for Tab 1
+  // Filtered universities using service with complete OKSO and area support
   const filteredUniversities = useMemo(() => {
-    return UNIVERSITIES.filter((uni) => {
-      // Search Query
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchesName = uni.name.toLowerCase().includes(q) || uni.fullName.toLowerCase().includes(q);
-        const matchesDesc = uni.description.toLowerCase().includes(q);
-        const matchesFaculty = uni.faculties.some(f => 
-          f.name.toLowerCase().includes(q) || 
-          f.programs.some(p => p.name.toLowerCase().includes(q) || p.code.includes(q))
-        );
-        if (!matchesName && !matchesDesc && !matchesFaculty) return false;
-      }
-
-      // Region Filter
-      if (selectedRegion !== 'Все регионы' && uni.region !== selectedRegion) {
-        return false;
-      }
-
-      // Area Filter
-      if (selectedArea !== 'Все направления') {
-        const matchesArea = uni.faculties.some(f => 
-          f.programs.some(p => {
-            if (selectedArea === 'Математика и IT') {
-              return p.code.startsWith('01.') || p.code.startsWith('02.') || p.code.startsWith('09.') || p.code.startsWith('10.');
-            }
-            if (selectedArea === 'Инженерия и технологии') {
-              return p.code.startsWith('11.') || p.code.startsWith('12.') || p.code.startsWith('13.') || p.code.startsWith('15.') || p.code.startsWith('24.') || p.code.startsWith('08.');
-            }
-            if (selectedArea === 'Экономика и управление') {
-              return p.code.startsWith('38.');
-            }
-            if (selectedArea === 'Медицина и биоинженерия') {
-              return p.code.startsWith('31.') || p.code.startsWith('32.') || p.code.startsWith('33.') || p.code.startsWith('19.');
-            }
-            if (selectedArea === 'Гуманитарные и социальные науки') {
-              return p.code.startsWith('40.') || p.code.startsWith('41.') || p.code.startsWith('42.') || p.code.startsWith('45.') || p.code.startsWith('46.');
-            }
-            return true;
-          })
-        );
-        if (!matchesArea) return false;
-      }
-
-      // Checkbox filters
-      if (filterStateOnly && !uni.isState) return false;
-      if (filterMilitary && !uni.hasMilitary) return false;
-      if (filterDorm && !uni.hasDorm) return false;
-
-      return true;
+    return universityService.filter({
+      searchQuery,
+      region: selectedRegion,
+      studyArea: selectedArea,
+      isStateOnly: filterStateOnly,
+      hasMilitaryOnly: filterMilitary,
+      hasDormOnly: filterDorm
     });
   }, [searchQuery, selectedRegion, selectedArea, filterStateOnly, filterMilitary, filterDorm]);
 
   const comparedUniversities = useMemo(() => {
-    return UNIVERSITIES.filter(u => comparedIds.includes(u.id));
+    const all = universityService.getAll();
+    return all.filter(u => comparedIds.includes(u.id));
   }, [comparedIds]);
 
   const bookmarkedUniversities = useMemo(() => {
-    return UNIVERSITIES.filter(u => bookmarkedIds.includes(u.id));
+    const all = universityService.getAll();
+    return all.filter(u => bookmarkedIds.includes(u.id));
   }, [bookmarkedIds]);
 
   return (
@@ -251,14 +209,36 @@ export const App: React.FC = () => {
         setActiveTab={setActiveTab}
         compareCount={comparedIds.length}
         bookmarksCount={bookmarkedIds.length}
+        planCount={planItems.length}
         openCompare={() => setIsCompareOpen(true)}
         openBookmarks={() => setIsBookmarksOpen(true)}
+        openPlan={() => setActiveTab('plan')}
         openAuth={() => setIsAuthOpen(true)}
         openSubmitReview={() => setIsSubmitReviewOpen(true)}
         openGlobalSearch={() => setIsGlobalSearchOpen(true)}
         openAdvModal={() => setIsAdvOpen(true)}
         openFeedbackModal={() => setIsFeedbackOpen(true)}
       />
+
+      {/* UniPedia Lab Banner: Transparent distinction of working features vs archive dataset */}
+      <div className="bg-slate-900 text-slate-300 text-[11px] sm:text-xs py-2 px-4 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded font-mono font-bold bg-blue-600 text-white text-[10px]">
+              LABORATORY
+            </span>
+            <span>
+              <strong>UniPedia Feature Lab:</strong> Экспериментальный полигон планирования поступления (шортлист, сравнение, «Мой план»). Архивный каталог вузов РФ.
+            </span>
+          </div>
+          <button
+            onClick={() => setActiveTab('plan')}
+            className="text-blue-400 hover:text-blue-300 font-bold underline whitespace-nowrap"
+          >
+            Перейти в «Мой план» ({planItems.length}) →
+          </button>
+        </div>
+      </div>
 
       {/* Main Content Area */}
       <main className="flex-1">
@@ -341,8 +321,19 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 2: Smart Podbor Wizard */}
+        {/* Secondary Views wrapped in Suspense */}
         <Suspense fallback={<div className="p-12 text-center text-xs font-semibold text-slate-400">Загрузка...</div>}>
+          
+          {/* TAB: My Plan Workspace (Saved Programmes, Requirements, Notes, Questions & Next Actions) */}
+          {activeTab === 'plan' && (
+            <MyPlanWorkspace 
+              onNavigateToCatalog={() => setActiveTab('vuz')}
+              onNavigateToCalculator={() => setActiveTab('calculator')}
+              onSelectUniversityByName={handleSelectUniByName}
+            />
+          )}
+
+          {/* TAB 2: Smart Podbor Wizard */}
           {activeTab === 'podbor' && (
             <PodborWizard onSelectUniversity={(u) => setSelectedUniversity(u)} />
           )}
@@ -456,7 +447,8 @@ export const App: React.FC = () => {
           <SubmitReviewModal
             isOpen={isSubmitReviewOpen}
             onClose={() => setIsSubmitReviewOpen(false)}
-            onSubmitReview={() => {
+            onSubmitReview={(newRev) => {
+              reviewService.addReview(newRev);
               setActiveTab('reviews');
             }}
           />

@@ -10,8 +10,10 @@ import {
   Bell, 
   Filter, 
   CalendarCheck,
-  Sparkles
+  Sparkles,
+  BellRing
 } from 'lucide-react';
+import { buildIcsCalendar } from '../services/calendarService';
 
 export const AdmissionsCalendar: React.FC = () => {
   const [selectedStage, setSelectedStage] = useState<string>('Все');
@@ -20,6 +22,15 @@ export const AdmissionsCalendar: React.FC = () => {
   const [completedIds, setCompletedIds] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('tabi_completed_deadlines');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [remindedIds, setRemindedIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('tabi_admissions_reminders');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -90,18 +101,9 @@ export const AdmissionsCalendar: React.FC = () => {
     });
   }, [selectedStage, selectedAudience, filterOnlyIncomplete, completedIds]);
 
-  // Export event to ICS file
+  // Export event to standard RFC 5545 compliant ICS file with valid DTSTART/DTEND
   const downloadIcs = (event: AdmissionsDeadline) => {
-    const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Tabiturient.ru//Admissions Calendar 2026//RU
-BEGIN:VEVENT
-UID:${event.id}-2026@tabiturient.ru
-SUMMARY:${event.title}
-DESCRIPTION:${event.description}\\nДокумент: ${event.officialDocument}
-STATUS:CONFIRMED
-END:VEVENT
-END:VCALENDAR`;
+    const icsContent = buildIcsCalendar([event], event.title);
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -110,27 +112,12 @@ END:VCALENDAR`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
-  // Export all 10 deadlines to a combined .ics calendar file
+  // Export all 10 deadlines to a combined RFC 5545 calendar file
   const downloadAllIcs = () => {
-    const eventsBlocks = ADMISSIONS_DEADLINES.map((event) => {
-      return `BEGIN:VEVENT
-UID:${event.id}-2026@tabiturient.ru
-SUMMARY:${event.title}
-DESCRIPTION:${event.description}\\nОфициальный документ: ${event.officialDocument}\\nЭтап: ${event.stage}
-STATUS:CONFIRMED
-END:VEVENT`;
-    }).join('\n');
-
-    const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Tabiturient.ru//Admissions Calendar 2026 All Milestones//RU
-CALSCALE:GREGORIAN
-X-WR-CALNAME:Календарь абитуриента 2026 Tabiturient
-${eventsBlocks}
-END:VCALENDAR`;
-
+    const icsContent = buildIcsCalendar(ADMISSIONS_DEADLINES, 'Календарь абитуриента 2026 Tabiturient');
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -139,16 +126,31 @@ END:VCALENDAR`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 
-    setNotificationToast('Файл календаря (все 10 дедлайнов) успешно скачан!');
+    setNotificationToast('Файл календаря со всеми датами и таймерами успешно скачан!');
     setTimeout(() => setNotificationToast(null), 3500);
   };
 
+  // Honest reminder toggle with local persistence
   const handleRemindMe = (event: AdmissionsDeadline) => {
-    setNotificationToast(`Напоминание для события «${event.title}» добавлено! Уведомление придет за 24 часа.`);
+    const isAlreadyReminded = remindedIds.includes(event.id);
+    const updated = isAlreadyReminded 
+      ? remindedIds.filter(id => id !== event.id)
+      : [...remindedIds, event.id];
+    setRemindedIds(updated);
+    try {
+      localStorage.setItem('tabi_admissions_reminders', JSON.stringify(updated));
+    } catch {}
+
+    if (isAlreadyReminded) {
+      setNotificationToast(`Событие «${event.title}» удалено из локальных напоминаний.`);
+    } else {
+      setNotificationToast(`Событие «${event.title}» сохранено в локальном списке. Чтобы получать системные уведомления, скачайте .ics файл.`);
+    }
     setTimeout(() => {
       setNotificationToast(null);
-    }, 4000);
+    }, 4500);
   };
 
   return (
@@ -374,11 +376,19 @@ END:VCALENDAR`;
                 <div className="flex sm:flex-col items-center sm:items-end gap-2 w-full sm:w-auto shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                   <button
                     onClick={() => handleRemindMe(item)}
-                    className="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
-                    title="Включить напоминание"
+                    className={`flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 ${
+                      remindedIds.includes(item.id)
+                        ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    }`}
+                    title={remindedIds.includes(item.id) ? 'Удалить из напоминаний' : 'Включить локальное напоминание'}
                   >
-                    <Bell className="w-3.5 h-3.5 text-slate-500" />
-                    Напомнить
+                    {remindedIds.includes(item.id) ? (
+                      <BellRing className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+                    ) : (
+                      <Bell className="w-3.5 h-3.5 text-slate-500" />
+                    )}
+                    {remindedIds.includes(item.id) ? 'В напоминаниях' : 'Напомнить'}
                   </button>
 
                   <button

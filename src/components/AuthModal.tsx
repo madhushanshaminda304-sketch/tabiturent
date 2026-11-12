@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Send, CheckCircle2 } from 'lucide-react';
+import { X, Send, CheckCircle2, Info } from 'lucide-react';
+import { authService } from '../services/authService';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -20,22 +21,29 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setTimeout(() => {
       setToastMessage(null);
       onClose();
-    }, 2000);
+    }, 2500);
   };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    showToast('Успешный вход в личный кабинет абитуриента!');
+    authService.loginLocalDemo(name || emailOrSnils.split('@')[0] || 'Абитуриент', emailOrSnils, 'local_guest');
+    showToast('Локальный гостевой профиль активирован. Данные сохраняются в вашем браузере.');
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    showToast('Регистрация завершена! Персональный профиль создан.');
+    authService.loginLocalDemo(name || 'Новый абитуриент', emailOrSnils, 'local_guest');
+    showToast('Локальный профиль создан! Заметки и списки сохраняются в браузере.');
   };
 
   const handleRemindSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    showToast(`Инструкция по сбросу пароля отправлена на ${emailOrSnils}!`);
+    showToast('Автономный демо-режим: внешняя отправка почты отключена. Все данные плана хранятся локально.');
+  };
+
+  const handleOAuthDemo = (provider: 'telegram_demo' | 'vk_demo' | 'yandex_demo', providerName: string) => {
+    authService.loginLocalDemo(`Пользователь ${providerName}`, `user@${provider}.local`, provider);
+    showToast(`Демо-сессия через ${providerName} создана локально на этом устройстве.`);
   };
 
   return (
@@ -70,33 +78,41 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         {/* Body */}
         <div className="p-6 space-y-4">
           
+          {/* Lab disclaimer */}
+          <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-[11px] text-blue-900 flex items-start gap-2">
+            <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+            <span>
+              <strong>UniPedia Lab • Демо-режим:</strong> Внешняя регистрация отключена. Вход активирует локальный сеанс на вашем устройстве для сохранения закладок и плана.
+            </span>
+          </div>
+
           {/* Quick OAuth (Telegram, VK, Yandex) */}
           {mode === 'login' && (
             <div className="space-y-2 pb-3 border-b border-slate-100">
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block text-center">
-                Быстрый вход в один клик:
+                Быстрый демо-вход в один клик:
               </span>
               <button
                 type="button"
-                onClick={() => showToast('Вход через Telegram ID успешно выполнен!')}
+                onClick={() => handleOAuthDemo('telegram_demo', 'Telegram')}
                 className="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold transition-colors shadow-sm flex items-center justify-center gap-2"
               >
-                <Send className="w-3.5 h-3.5" /> Войти через Telegram
+                <Send className="w-3.5 h-3.5" /> Войти через Telegram (Демо)
               </button>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => showToast('Вход через VK ID успешно выполнен!')}
+                  onClick={() => handleOAuthDemo('vk_demo', 'VK ID')}
                   className="py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-sm"
                 >
-                  VK ID
+                  VK ID (Демо)
                 </button>
                 <button
                   type="button"
-                  onClick={() => showToast('Вход через Яндекс ID успешно выполнен!')}
+                  onClick={() => handleOAuthDemo('yandex_demo', 'Яндекс')}
                   className="py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors shadow-sm"
                 >
-                  Яндекс
+                  Яндекс (Демо)
                 </button>
               </div>
             </div>

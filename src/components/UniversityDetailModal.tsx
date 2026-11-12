@@ -12,11 +12,14 @@ import {
   Calendar,
   HelpCircle,
   Building2,
-  Sparkles
+  Sparkles,
+  BookmarkCheck,
+  Plus
 } from 'lucide-react';
 import { University } from '../types';
 import { REVIEWS, OPEN_DAYS, QNA_QUESTIONS } from '../data/mockData';
 import { DormChanceCalculator } from './DormChanceCalculator';
+import { usePlanStore } from '../services/planStore';
 
 interface UniversityDetailModalProps {
   university: University | null;
@@ -37,6 +40,7 @@ export const UniversityDetailModal: React.FC<UniversityDetailModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'about' | 'programs' | 'reviews' | 'dorm' | 'dod' | 'qna'>('programs');
   const [userScore, setUserScore] = useState<string>('');
+  const { addProgram, hasProgram } = usePlanStore();
 
   if (!university) return null;
 
@@ -255,6 +259,7 @@ export const UniversityDetailModal: React.FC<UniversityDetailModalProps> = ({
                     {faculty.programs.map((program) => {
                       const passesBudget = parsedUserScore > 0 && parsedUserScore >= program.passingScoreBudget;
                       const passesPaid = parsedUserScore > 0 && parsedUserScore >= program.passingScorePaid;
+                      const inPlan = hasProgram(program.id);
 
                       return (
                         <div 
@@ -276,7 +281,7 @@ export const UniversityDetailModal: React.FC<UniversityDetailModalProps> = ({
                                 {program.name}
                               </span>
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
                               {parsedUserScore > 0 && (
                                 <span className={`text-[11px] font-bold px-2 py-0.5 rounded-lg ${
                                   passesBudget
@@ -291,6 +296,37 @@ export const UniversityDetailModal: React.FC<UniversityDetailModalProps> = ({
                               <span className="text-xs font-semibold px-2 py-1 bg-slate-200 rounded text-slate-700">
                                 {program.degree} • {program.durationYears} года
                               </span>
+                              <button
+                                onClick={() => {
+                                  addProgram({
+                                    programId: program.id,
+                                    programCode: program.code,
+                                    programName: program.name,
+                                    universityId: university.id,
+                                    universityName: university.name,
+                                    campusId: university.campusId || `${university.id}-main`,
+                                    campusName: university.campusName || `${university.name} (Кампус)`,
+                                    durationYears: program.durationYears,
+                                    degree: program.degree,
+                                    pathway: university.isState ? 'ugc_state' : 'private_approved',
+                                    tuitionPerYear: program.tuitionPerYear,
+                                    passingScoreBudget: program.passingScoreBudget,
+                                    passingScorePaid: program.passingScorePaid,
+                                    budgetSlots: program.budgetSlots,
+                                    paidSlots: program.paidSlots,
+                                    knownRequirements: program.subjects.map(s => `${s.subject} (мин. ${s.minScore})`)
+                                  }, 'shortlisted');
+                                }}
+                                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1 ${
+                                  inPlan
+                                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                    : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+                                }`}
+                                title={inPlan ? 'Программа уже в вашем плане' : 'Добавить эту программу в Мой план'}
+                              >
+                                {inPlan ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                                <span>{inPlan ? 'В плане' : '+ В план'}</span>
+                              </button>
                             </div>
                           </div>
 

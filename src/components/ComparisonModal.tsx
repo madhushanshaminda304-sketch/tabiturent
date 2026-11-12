@@ -8,6 +8,7 @@ import {
   Share2 
 } from 'lucide-react';
 import { University } from '../types';
+import { ShortlistService } from '../services/shortlistService';
 
 interface ComparisonModalProps {
   isOpen: boolean;
@@ -68,8 +69,8 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
   };
 
   const handleCopyShareLink = () => {
-    const ids = comparedUniversities.map((u) => u.id).join(',');
-    const url = `${window.location.origin}?tab=vuz&compare=${ids}`;
+    const ids = comparedUniversities.map((u) => u.id);
+    const url = ShortlistService.generateShareUrl(ids);
     navigator.clipboard?.writeText(url);
     showToast('Ссылка на сравнение скопирована в буфер обмена!');
   };
